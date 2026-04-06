@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Deutsch A1 · Prácticas Interactivas</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --negro:    #0D1117;
+  --carbon:   #161B22;
+  --panel:    #1C2333;
+  --borde:    #30363D;
+  --azul:     #2563EB;
+  --azul-lt:  #1D3461;
+  --azul-glow:#3B82F6;
+  --verde:    #10B981;
+  --verde-lt: #064E3B;
+  --rojo:     #EF4444;
+  --rojo-lt:  #4B1C1C;
+  --amarillo: #F59E0B;
+  --texto:    #E2E8F0;
+  --muted:    #8B949E;
+  --blanco:   #F0F6FC;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--negro);
+  color:var(--texto);
+  min-height:100vh;
+}
+
+/* ── SIDEBAR ── */
+.layout{display:flex;min-height:100vh}
+.sidebar{
+  width:260px;
+  flex-shrink:0;
+  background:var(--carbon);
+  border-right:1px solid var(--borde);
+  display:flex;
+  flex-direction:column;
+  position:fixed;
+  top:0;left:0;
+  height:100vh;
+  overflow-y:auto;
+  z-index:50;
+  transition:transform 0.3s;
+}
+.sidebar-head{
+  padding:20px 16px 16px;
+  border-bottom:1px solid var(--borde);
+  position:sticky;top:0;
+  background:var(--carbon);
+  z-index:2;
+}
+.sidebar-logo{
+  font-size:20px;font-weight:800;color:var(--blanco);
+  display:flex;align-items:center;gap:8px;margin-bottom:4px;
+}
+.sidebar-logo span{
+  background:var(--azul);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+  padding:2px 8px;
+  border-radius:4px;
+  letter-spacing:0.06em;
+}
+.sidebar-score{
+  font-size:12px;color:var(--muted);
+  display:flex;align-items:center;gap:6px;margin-top:6px;
+}
+.score-pill{
+  background:var(--azul-lt);
+  color:var(--azul-glow);
+  font-weight:700;
+  font-size:13px;
+  padding:2px 10px;
+  border-radius:20px;
+  font-family:'JetBrains Mono',monospace;
+}
+.sidebar-nav{padding:10px 0 20px}
+.nav-tema{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 16px;
+  font-size:13px;
+  font-weight:500;
+  color:var(--muted);
+  cursor:pointer;
+  border-left:3px solid transparent;
+  transition:all 0.15s;
+  line-height:1.3;
+}
+.nav-tema:hover{color:var(--blanco);background:rgba(255,255,255,0.04)}
+.nav-tema.activo{color:var(--azul-glow);border-left-color:var(--azul-glow);background:rgba(37,99,235,0.1)}
+.nav-tema.done{color:var(--verde)}
+.nav-tema .check{font-size:11px;margin-left:auto;flex-shrink:0}
+.nav-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;
+  color:var(--borde);
+  min-width:18px;
+  flex-shrink:0;
+}
+
+/* ── HAMBURGER ── */
+.hamburger{
+  display:none;
+  position:fixed;top:14px;left:14px;z-index:200;
+  background:var(--azul);
+  border:none;border-radius:8px;
+  width:38px;height:38px;
+  cursor:pointer;
+  flex-direction:column;align-items:center;justify-content:center;gap:5px;
+}
+.hamburger span{display:block;width:18px;height:2px;background:#fff;border-radius:2px}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:40}
+
+/* ── MAIN ── */
+.main{
+  margin-left:260px;
+  flex:1;
+  padding:32px 24px 64px;
+  max-width:820px;
+}
+
+/* ── HEADER TEMA ── */
+.tema-header{
+  display:flex;align-items:flex-start;gap:14px;
+  margin-bottom:28px;padding-bottom:20px;
+  border-bottom:1px solid var(--borde);
+}
+.tema-icon{
+  width:48px;height:48px;
+  border-radius:12px;
+  background:var(--azul);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  flex-shrink:0;
+}
+.tema-title{font-size:24px;font-weight:800;color:var(--blanco);line-height:1.2}
+.tema-sub{font-size:13px;color:var(--muted);margin-top:3px}
+.tema-progress{
+  margin-left:auto;text-align:right;flex-shrink:0;
+}
+.tema-progress .pts{
+  font-family:'JetBrains Mono',monospace;
+  font-size:22px;font-weight:700;color:var(--azul-glow);
+}
+.tema-progress .pts-label{font-size:11px;color:var(--muted)}
+
+/* ── SECCIÓN TIPO ── */
+.tipo-section{margin-bottom:32px}
+.tipo-label{
+  display:flex;align-items:center;gap:8px;
+  font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.1em;
+  color:var(--muted);
+  margin-bottom:14px;
+}
+.tipo-label::after{content:'';flex:1;height:1px;background:var(--borde)}
+.tipo-badge{
+  padding:3px 10px;border-radius:4px;
+  font-size:10px;font-weight:700;letter-spacing:0.08em;
+}
+.badge-mc  {background:#1D3461;color:#60A5FA}
+.badge-fill{background:#064E3B;color:#34D399}
+.badge-tr  {background:#3D1D00;color:#FBBF24}
+
+/* ── TARJETA EJERCICIO ── */
+.ejercicio{
+  background:var(--panel);
+  border:1px solid var(--borde);
+  border-radius:12px;
+  padding:18px 20px;
+  margin-bottom:12px;
+  transition:border-color 0.2s;
+}
+.ejercicio.correcto{border-color:var(--verde)}
+.ejercicio.incorrecto{border-color:var(--rojo)}
+.ej-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;color:var(--muted);
+  margin-bottom:8px;
+}
+.ej-pregunta{
+  font-size:15px;font-weight:600;color:var(--blanco);
+  line-height:1.5;margin-bottom:14px;
+}
+.ej-pregunta em{font-style:normal;color:var(--azul-glow)}
+
+/* Opciones selección múltiple */
+.opciones{display:flex;flex-direction:column;gap:7px}
+.opcion{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;
+  border-radius:8px;
+  border:1.5px solid var(--borde);
+  background:var(--carbon);
+  cursor:pointer;
+  font-size:14px;font-weight:500;
+  color:var(--texto);
+  transition:all 0.15s;
+  text-align:left;
+  font-family:'Outfit',sans-serif;
+}
+.opcion:hover:not(:disabled){border-color:var(--azul-glow);color:var(--blanco);background:rgba(37,99,235,0.1)}
+.opcion.sel-correcta{border-color:var(--verde)!important;background:rgba(16,185,129,0.12)!important;color:#6EE7B7!important}
+.opcion.sel-incorrecta{border-color:var(--rojo)!important;background:rgba(239,68,68,0.1)!important;color:#FCA5A5!important}
+.opcion.sel-reveal{border-color:var(--verde)!important;background:rgba(16,185,129,0.07)!important;color:#6EE7B7!important}
+.opcion:disabled{cursor:default}
+.opcion-letra{
+  width:24px;height:24px;border-radius:6px;
+  background:var(--borde);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;
+  flex-shrink:0;
+}
+
+/* Input completar */
+.fill-wrap{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.fill-input{
+  font-family:'JetBrains Mono',monospace;
+  font-size:15px;font-weight:500;
+  padding:9px 14px;
+  background:var(--carbon);
+  border:1.5px solid var(--borde);
+  border-radius:8px;
+  color:var(--blanco);
+  outline:none;
+  min-width:160px;
+  transition:border-color 0.2s;
+}
+.fill-input:focus{border-color:var(--azul-glow)}
+.fill-input.ok{border-color:var(--verde)!important;color:#6EE7B7}
+.fill-input.err{border-color:var(--rojo)!important;color:#FCA5A5}
+.fill-input:disabled{cursor:default}
+.btn-check{
+  font-family:'Outfit',sans-serif;
+  font-size:13px;font-weight:700;
+  padding:9px 18px;
+  border-radius:8px;border:none;
+  background:var(--azul);color:#fff;
+  cursor:pointer;transition:all 0.15s;
+  white-space:nowrap;
+}
+.btn-check:hover:not(:disabled){background:var(--azul-glow);transform:translateY(-1px)}
+.btn-check:disabled{background:var(--borde);color:var(--muted);cursor:default;transform:none}
+
+/* Traducir */
+.tr-area{width:100%}
+.tr-input{
+  width:100%;
+  font-family:'Outfit',sans-serif;
+  font-size:14px;
+  padding:11px 14px;
+  background:var(--carbon);
+  border:1.5px solid var(--borde);
+  border-radius:8px;
+  color:var(--blanco);
+  outline:none;
+  resize:none;
+  min-height:52px;
+  transition:border-color 0.2s;
+  margin-bottom:10px;
+}
+.tr-input:focus{border-color:var(--azul-glow)}
+.tr-input.ok{border-color:var(--verde);color:#6EE7B7}
+.tr-input.err{border-color:var(--rojo);color:#FCA5A5}
+.tr-input:disabled{cursor:default}
+
+/* Retroalimentación */
+.feedback{
+  display:none;
+  margin-top:10px;
+  padding:10px 14px;
+  border-radius:8px;
+  font-size:13px;line-height:1.6;
+}
+.feedback.ok{
+  display:block;
+  background:rgba(16,185,129,0.1);
+  border:1px solid rgba(16,185,129,0.3);
+  color:#6EE7B7;
+}
+.feedback.err{
+  display:block;
+  background:rgba(239,68,68,0.08);
+  border:1px solid rgba(239,68,68,0.25);
+  color:#FCA5A5;
+}
+.feedback strong{font-weight:700}
+
+/* ── BARRA PROGRESO TEMA ── */
+.prog-bar-wrap{
+  background:var(--borde);
+  border-radius:20px;height:4px;
+  margin-bottom:24px;overflow:hidden;
+}
+.prog-bar{
+  height:100%;
+  background:linear-gradient(90deg,var(--azul),var(--verde));
+  border-radius:20px;
+  transition:width 0.4s ease;
+}
+
+/* ── PANTALLA INICIO ── */
+.inicio{
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  min-height:60vh;text-align:center;padding:40px 20px;
+}
+.inicio-flag{font-size:72px;margin-bottom:20px}
+.inicio h1{font-size:36px;font-weight:800;color:var(--blanco);margin-bottom:10px}
+.inicio p{font-size:16px;color:var(--muted);max-width:420px;line-height:1.7;margin-bottom:30px}
+.stats-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:12px;width:100%;max-width:380px;margin-bottom:32px;
+}
+.stat-card{
+  background:var(--panel);border:1px solid var(--borde);
+  border-radius:10px;padding:14px;
+}
+.stat-card .num{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;color:var(--azul-glow)}
+.stat-card .lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.btn-start{
+  font-family:'Outfit',sans-serif;
+  font-size:16px;font-weight:700;
+  padding:14px 36px;
+  background:var(--azul);color:#fff;
+  border:none;border-radius:10px;cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-start:hover{background:var(--azul-glow);transform:translateY(-2px);box-shadow:0 8px 24px rgba(37,99,235,0.3)}
+
+/* ── RESUMEN TEMA ── */
+.resumen{
+  background:var(--panel);border:1px solid var(--borde);
+  border-radius:14px;padding:28px;text-align:center;
+  margin-top:16px;display:none;
+}
+.resumen.visible{display:block}
+.resumen h3{font-size:20px;font-weight:800;color:var(--blanco);margin-bottom:6px}
+.resumen .big-score{
+  font-family:'JetBrains Mono',monospace;
+  font-size:48px;font-weight:700;
+  color:var(--azul-glow);margin:12px 0;
+}
+.resumen p{font-size:14px;color:var(--muted);margin-bottom:20px}
+.btn-sig{
+  font-family:'Outfit',sans-serif;
+  font-size:14px;font-weight:700;
+  padding:12px 28px;
+  background:var(--verde);color:#fff;
+  border:none;border-radius:8px;cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-sig:hover{background:#059669;transform:translateY(-1px)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .overlay.open{display:block}
+  .main{margin-left:0;padding:20px 16px 64px}
+  .hamburger{display:flex}
+  .main{padding-top:64px}
+  .stats-grid{grid-template-columns:repeat(3,1fr)}
+}
+</style>
+</head>
+<body>
+
+<button class="hamburger" id="ham" onclick="toggleSidebar()">
+  <span></span><span></span><span></span>
+</button>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-head">
+    <div class="sidebar-logo">🇩🇪 Deutsch <span>A1</span></div>
+    <div class="sidebar-score">
+      Puntuación total: <span class="score-pill" id="score-total">0</span>
+    </div>
+  </div>
+  <div class="sidebar-nav" id="sidebar-nav">
+    <!-- generado por JS -->
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main" id="main-content">
+  <!-- Pantalla inicio -->
+  <div class="inicio" id="pantalla-inicio">
+    <div class="inicio-flag">🇩🇪</div>
+    <h1>Prácticas de Alemán</h1>
+    <p>27 temas del nivel A1 con ejercicios de selección múltiple, completar espacios y traducción. Con puntuación y retroalimentación inmediata.</p>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="num">27</div><div class="lbl">Temas</div></div>
+      <div class="stat-card"><div class="num">3</div><div class="lbl">Tipos</div></div>
+      <div class="stat-card"><div class="num">~270</div><div class="lbl">Ejercicios</div></div>
+    </div>
+    <button class="btn-start" onclick="iniciarCurso()">Comenzar →</button>
+  </div>
+
+  <!-- Contenido del tema (oculto inicialmente) -->
+  <div id="pantalla-tema" style="display:none"></div>
+</main>
+
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// DATOS: 27 temas con ejercicios
+// ══════════════════════════════════════════════════════════════
+const TEMAS = [
+{
+  id:0, titulo:"Artículo", icono:"📰",
+  mc:[
+    {p:"¿Cuál es el artículo de <em>Hund</em> (perro)?",ops:["der","die","das","den"],r:0,exp:"Hund es masculino → der Hund."},
+    {p:"¿Cuál es el artículo de <em>Frau</em> (mujer)?",ops:["der","die","das","dem"],r:1,exp:"Frau es femenino → die Frau."},
+    {p:"¿Cuál es el artículo de <em>Kind</em> (niño)?",ops:["der","die","das","den"],r:2,exp:"Kind es neutro → das Kind."},
+    {p:"¿Cuál es el artículo de <em>Mann</em> (hombre)?",ops:["der","die","das","dem"],r:0,exp:"Mann es masculino → der Mann."},
+    {p:"¿Cuál es el artículo de <em>Buch</em> (libro)?",ops:["der","die","das","den"],r:2,exp:"Buch es neutro → das Buch."},
+    {p:"¿Cuál es el artículo indefinido masculino?",ops:["ein","eine","einen","einer"],r:0,exp:"Masculino nominativo → ein. Ej: ein Mann."},
+    {p:"¿Cuál es el artículo indefinido femenino?",ops:["ein","eine","einen","einer"],r:1,exp:"Femenino → eine. Ej: eine Frau."},
+    {p:"¿Cuál es el artículo de <em>Auto</em> (carro)?",ops:["der","die","das","dem"],r:2,exp:"Auto es neutro → das Auto."},
+    {p:"¿Cuál es el artículo de <em>Stadt</em> (ciudad)?",ops:["der","die","das","dem"],r:1,exp:"Stadt es femenino → die Stadt."},
+    {p:"¿Cuál es el artículo de <em>Tisch</em> (mesa)?",ops:["der","die","das","dem"],r:0,exp:"Tisch es masculino → der Tisch."},
+  ],
+  fill:[
+    {p:"___ Hund ist groß. (El perro es grande)",ans:["Der"],exp:"Hund = masculino → Der"},
+    {p:"___ Kind schläft. (El niño duerme)",ans:["Das"],exp:"Kind = neutro → Das"},
+    {p:"Ich habe ___ Buch. (Tengo un libro)",ans:["ein"],exp:"Buch neutro, acusativo → ein"},
+    {p:"___ Frau singt. (La mujer canta)",ans:["Die"],exp:"Frau = femenino → Die"},
+    {p:"Das ist ___ Auto. (Ese es un carro)",ans:["ein"],exp:"Auto neutro indefinido → ein"},
+    {p:"___ Mann liest. (El hombre lee)",ans:["Der"],exp:"Mann = masculino → Der"},
+    {p:"Ich sehe ___ Frau. (Veo una mujer)",ans:["eine"],exp:"Frau femenino, acusativo → eine"},
+    {p:"___ Stadt ist schön. (La ciudad es bonita)",ans:["Die"],exp:"Stadt = femenino → Die"},
+    {p:"Er kauft ___ Tisch. (Él compra una mesa)",ans:["einen"],exp:"Tisch masculino acusativo → einen"},
+    {p:"___ Buch ist neu. (El libro es nuevo)",ans:["Das"],exp:"Buch = neutro → Das"},
+  ],
+  tr:[
+    {p:"Traduce al alemán: 'El perro'",ans:["der Hund","Der Hund"],exp:"Masculino → der Hund"},
+    {p:"Traduce al alemán: 'La mujer'",ans:["die Frau","Die Frau"],exp:"Femenino → die Frau"},
+    {p:"Traduce al alemán: 'El niño'",ans:["das Kind","Das Kind"],exp:"Neutro → das Kind"},
+    {p:"Traduce: 'Un hombre'",ans:["ein Mann"],exp:"Masculino indefinido → ein Mann"},
+    {p:"Traduce: 'Una mujer'",ans:["eine Frau"],exp:"Femenino indefinido → eine Frau"},
+    {p:"Traduce: 'El libro'",ans:["das Buch","Das Buch"],exp:"Neutro → das Buch"},
+    {p:"Traduce: 'El carro'",ans:["das Auto","Das Auto"],exp:"Neutro → das Auto"},
+    {p:"Traduce: 'La ciudad'",ans:["die Stadt","Die Stadt"],exp:"Femenino → die Stadt"},
+    {p:"Traduce: 'Un niño'",ans:["ein Kind"],exp:"Neutro indefinido → ein Kind"},
+    {p:"Traduce: 'La mesa'",ans:["der Tisch","Der Tisch"],exp:"Masculino → der Tisch"},
+  ]
+},
+{
+  id:1, titulo:"Cómo elegir palabras", icono:"💬",
+  mc:[
+    {p:"¿Cómo se dice 'también' en alemán?",ops:["auch","noch","schon","immer"],r:0,exp:"'auch' = también. Ej: Ich auch = Yo también."},
+    {p:"¿Qué significa 'sehr'?",ops:["poco","nada","muy","siempre"],r:2,exp:"'sehr' = muy. Ej: sehr gut = muy bien."},
+    {p:"¿Cómo se dice 'o' (disyuntiva)?",ops:["und","oder","aber","denn"],r:1,exp:"'oder' = o. Ej: Tee oder Kaffee."},
+    {p:"¿Qué significa 'vielleicht'?",ops:["seguro","nunca","quizás","siempre"],r:2,exp:"'vielleicht' = quizás / tal vez."},
+    {p:"¿Cómo se dice 'y' (conjunción)?",ops:["aber","oder","und","weil"],r:2,exp:"'und' = y. Ej: Brot und Butter."},
+    {p:"¿Qué significa 'jetzt'?",ops:["ayer","ahora","mañana","tarde"],r:1,exp:"'jetzt' = ahora. Ej: Ich bin jetzt hier."},
+    {p:"¿Cómo se dice 'aquí'?",ops:["dort","hier","nie","wann"],r:1,exp:"'hier' = aquí. 'dort' = allá."},
+    {p:"¿Qué significa 'nicht'?",ops:["sí","también","no/no es","muy"],r:2,exp:"'nicht' = no (negación). Ej: Ich bin nicht müde."},
+    {p:"¿Cómo se dice 'siempre'?",ops:["nie","manchmal","immer","oft"],r:2,exp:"'immer' = siempre. 'nie' = nunca."},
+    {p:"¿Qué significa 'warum'?",ops:["cuándo","cómo","dónde","por qué"],r:3,exp:"'warum' = por qué. Ej: Warum kommst du?"},
+  ],
+  fill:[
+    {p:"Ich lerne ___ Deutsch. (También aprendo alemán)",ans:["auch"],exp:"'auch' = también"},
+    {p:"Das ist ___ gut! (¡Eso es muy bueno!)",ans:["sehr"],exp:"'sehr' = muy"},
+    {p:"Kaffee ___ Tee? (¿Café o té?)",ans:["oder"],exp:"'oder' = o"},
+    {p:"Ich bin ___ hier. (Estoy aquí ahora)",ans:["jetzt"],exp:"'jetzt' = ahora"},
+    {p:"Er kommt ___ nicht. (Él quizás no viene)",ans:["vielleicht"],exp:"'vielleicht' = quizás"},
+    {p:"Ich bin ___ müde. (Yo no estoy cansado)",ans:["nicht"],exp:"'nicht' = negación"},
+    {p:"Sie ist ___ hier. (Ella siempre está aquí)",ans:["immer"],exp:"'immer' = siempre"},
+    {p:"Brot ___ Wasser. (Pan y agua)",ans:["und"],exp:"'und' = y"},
+    {p:"___ kommst du? (¿Por qué vienes?)",ans:["Warum"],exp:"'Warum' = por qué"},
+    {p:"Ich bin ___ hier. (Estoy aquí)",ans:["hier"],exp:"'hier' = aquí"},
+  ],
+  tr:[
+    {p:"Traduce: 'Yo también'",ans:["Ich auch"],exp:"Ich = yo, auch = también"},
+    {p:"Traduce: '¿Por qué?'",ans:["Warum?","Warum"],exp:"Warum = por qué"},
+    {p:"Traduce: 'Muy bien'",ans:["Sehr gut"],exp:"sehr = muy, gut = bien"},
+    {p:"Traduce: '¿Café o té?'",ans:["Kaffee oder Tee?","Kaffee oder Tee"],exp:"oder = o"},
+    {p:"Traduce: 'Ahora no'",ans:["Jetzt nicht"],exp:"Jetzt = ahora, nicht = no"},
+    {p:"Traduce: 'Pan y agua'",ans:["Brot und Wasser"],exp:"und = y"},
+    {p:"Traduce: 'Quizás mañana'",ans:["Vielleicht morgen"],exp:"vielleicht = quizás, morgen = mañana"},
+    {p:"Traduce: 'Siempre aquí'",ans:["Immer hier"],exp:"immer = siempre, hier = aquí"},
+    {p:"Traduce: 'Yo no'",ans:["Ich nicht"],exp:"nicht = negación"},
+    {p:"Traduce: '¿Dónde estás?'",ans:["Wo bist du?","Wo bist du"],exp:"Wo = dónde, bist = eres/estás, du = tú"},
+  ]
+},
+{
+  id:2, titulo:"Traducción y Corrección Libre", icono:"✏️",
+  mc:[
+    {p:"¿Cuál es la traducción correcta de 'Guten Morgen'?",ops:["Buenas noches","Buenos días","Buenas tardes","Hasta luego"],r:1,exp:"Guten Morgen = Buenos días."},
+    {p:"¿Cuál es la traducción de 'Danke schön'?",ops:["De nada","Hola","Muchas gracias","Por favor"],r:2,exp:"Danke schön = Muchas gracias."},
+    {p:"'Bitte' puede significar:",ops:["Gracias / Adiós","Por favor / De nada","Hola / Adiós","Sí / No"],r:1,exp:"'Bitte' = por favor Y de nada según contexto."},
+    {p:"¿Qué significa 'Entschuldigung'?",ops:["Gracias","Hola","Disculpa/Perdón","Adiós"],r:2,exp:"Entschuldigung = perdón / disculpe."},
+    {p:"¿Cómo se dice 'No entiendo' en alemán?",ops:["Ich verstehe nicht","Ich lerne nicht","Ich bin nicht","Ich habe nicht"],r:0,exp:"Ich verstehe nicht = No entiendo."},
+    {p:"¿Cómo se dice 'Hablas alemán'?",ops:["Du lernst Deutsch","Du sprichst Deutsch","Du bist Deutsch","Du hast Deutsch"],r:1,exp:"Du sprichst Deutsch = Hablas alemán."},
+    {p:"¿Qué significa 'Wie bitte?'",ops:["¿Cómo te llamas?","¿Perdón? / ¿Cómo?","¿Dónde estás?","¿Qué haces?"],r:1,exp:"'Wie bitte?' = ¿Perdón? (pedir que repitan)."},
+    {p:"'Ich bin müde' significa:",ops:["Tengo hambre","Estoy aburrido","Estoy cansado","Tengo frío"],r:2,exp:"müde = cansado/a."},
+    {p:"'Ich habe Hunger' significa:",ops:["Tengo sed","Tengo frío","Tengo hambre","Estoy cansado"],r:2,exp:"Hunger = hambre. Ich habe Hunger = Tengo hambre."},
+    {p:"¿Cómo se dice 'Me llamo...'?",ops:["Ich bin...","Ich heiße...","Ich habe...","Ich lerne..."],r:1,exp:"Ich heiße... = Me llamo... (nombre propio)."},
+  ],
+  fill:[
+    {p:"Guten ___! (¡Buenos días!)",ans:["Morgen"],exp:"Guten Morgen = Buenos días"},
+    {p:"Ich ___ nicht. (No entiendo)",ans:["verstehe"],exp:"verstehen = entender → verstehe (yo)"},
+    {p:"Wie ___? (¿Perdón?)",ans:["bitte"],exp:"Wie bitte? = ¿Perdón?"},
+    {p:"Ich ___ müde. (Estoy cansado)",ans:["bin"],exp:"bin = soy/estoy (ich bin)"},
+    {p:"___ schön! (¡Muchas gracias!)",ans:["Danke"],exp:"Danke schön = Muchas gracias"},
+    {p:"Ich heiße ___. (Me llamo Ana)",ans:["Ana","anna","ana"],exp:"Reemplaza con tu nombre"},
+    {p:"Ich habe ___. (Tengo hambre)",ans:["Hunger"],exp:"Hunger = hambre"},
+    {p:"___ Morgen! (¡Buenos días!)",ans:["Guten"],exp:"Guten = buenos (adjetivo declinado)"},
+    {p:"Du ___ Deutsch. (Hablas alemán)",ans:["sprichst"],exp:"sprechen → du sprichst"},
+    {p:"Tut mir ___. (Lo siento)",ans:["leid"],exp:"Tut mir leid = Lo siento"},
+  ],
+  tr:[
+    {p:"Traduce: 'Buenos días'",ans:["Guten Morgen"],exp:"Guten Morgen = Buenos días"},
+    {p:"Traduce: 'Muchas gracias'",ans:["Danke schön","Vielen Dank"],exp:"Danke schön o Vielen Dank"},
+    {p:"Traduce: 'Disculpe'",ans:["Entschuldigung","Entschuldige"],exp:"Entschuldigung = Disculpe"},
+    {p:"Traduce: 'No entiendo'",ans:["Ich verstehe nicht"],exp:"Ich verstehe nicht"},
+    {p:"Traduce: 'Me llamo Juan'",ans:["Ich heiße Juan"],exp:"Ich heiße + nombre"},
+    {p:"Traduce: 'Estoy cansado'",ans:["Ich bin müde"],exp:"bin = estoy, müde = cansado"},
+    {p:"Traduce: 'Por favor'",ans:["Bitte"],exp:"Bitte = por favor"},
+    {p:"Traduce: 'De nada'",ans:["Bitte","Gern geschehen"],exp:"Bitte o Gern geschehen"},
+    {p:"Traduce: 'Lo siento'",ans:["Tut mir leid","Es tut mir leid"],exp:"Tut mir leid = Lo siento"},
+    {p:"Traduce: 'Tengo hambre'",ans:["Ich habe Hunger"],exp:"Ich habe Hunger"},
+  ]
+},
+{
+  id:3, titulo:"Estructura de la Oración", icono:"🏗️",
+  mc:[
+    {p:"En alemán, el verbo en oración principal va en:",ops:["posición 1","posición 2","posición 3","al final"],r:1,exp:"El verbo conjugado SIEMPRE va en la posición 2."},
+    {p:"¿Cuál es el orden correcto?",ops:["Ich Deutsch lerne","Deutsch lerne ich","Ich lerne Deutsch","Lerne Deutsch ich"],r:2,exp:"Sujeto + Verbo (pos.2) + objeto → Ich lerne Deutsch."},
+    {p:"Si comienzo con 'Heute' (hoy), ¿qué sigue?",ops:["Heute ich lerne","Heute lerne ich","Heute ich komme","Heute ich bin"],r:1,exp:"El verbo mantiene posición 2: Heute lerne ich."},
+    {p:"¿Cuál es el orden correcto de negación?",ops:["Ich nicht lerne","Ich lerne nicht","Nicht ich lerne","Lerne ich nicht"],r:1,exp:"La negación 'nicht' va al final: Ich lerne nicht."},
+    {p:"En preguntas SÍ/NO, el verbo va en:",ops:["posición 1","posición 2","posición 3","al final"],r:0,exp:"Preguntas sí/no → verbo primero: Lernst du?"},
+    {p:"¿Cuál es la pregunta correcta?",ops:["Du heißt wie?","Wie du heißt?","Wie heißt du?","Heißt wie du?"],r:2,exp:"Wie heißt du? = ¿Cómo te llamas?"},
+    {p:"¿Cómo se pregunta '¿Hablas alemán?'?",ops:["Du sprichst Deutsch?","Sprichst du Deutsch?","Deutsch sprichst du?","Du Deutsch sprichst?"],r:1,exp:"Verbo al inicio en preguntas sí/no: Sprichst du Deutsch?"},
+    {p:"¿Qué es correcto?",ops:["Er nicht kommt","Er kommt nicht","Nicht er kommt","Kommt er nicht immer"],r:1,exp:"Er kommt nicht = Él no viene."},
+    {p:"¿Cuál tiene orden correcto?",ops:["Heute ich arbeite","Heute arbeite ich","Ich heute arbeite","Arbeite heute ich"],r:1,exp:"Adverbio al inicio → verbo en posición 2."},
+    {p:"¿Cuál es correcto?",ops:["Ich bin Student","Student bin ich","Bin ich Student","Ich Student bin"],r:0,exp:"Sujeto + verbo + complemento → Ich bin Student."},
+  ],
+  fill:[
+    {p:"Ich ___ Deutsch. (Aprendo alemán)",ans:["lerne"],exp:"lernen → ich lerne"},
+    {p:"Wie ___ du? (¿Cómo te llamas?)",ans:["heißt"],exp:"heißen → du heißt"},
+    {p:"Er ___ nicht. (Él no viene)",ans:["kommt"],exp:"kommen → er kommt + nicht al final"},
+    {p:"Heute ___ ich Musik. (Hoy escucho música)",ans:["höre"],exp:"hören → ich höre. Verbo en posición 2."},
+    {p:"___ du Deutsch? (¿Hablas alemán?)",ans:["Sprichst"],exp:"Pregunta sí/no → verbo primero"},
+    {p:"Sie ___ in Berlin. (Ella vive en Berlín)",ans:["wohnt"],exp:"wohnen → sie wohnt"},
+    {p:"Ich bin ___ müde. (No estoy cansado)",ans:["nicht"],exp:"nicht = negación"},
+    {p:"Wo ___ du? (¿Dónde vives?)",ans:["wohnst"],exp:"wohnen → du wohnst"},
+    {p:"Er ___ Student. (Él es estudiante)",ans:["ist"],exp:"sein → er ist"},
+    {p:"___ du Hunger? (¿Tienes hambre?)",ans:["Hast"],exp:"haben → du hast. Verbo al inicio."},
+  ],
+  tr:[
+    {p:"Traduce: 'Aprendo alemán'",ans:["Ich lerne Deutsch"],exp:"Sujeto + verbo + objeto"},
+    {p:"Traduce: '¿Cómo te llamas?'",ans:["Wie heißt du?"],exp:"Wie + verbo + sujeto"},
+    {p:"Traduce: 'Él no viene'",ans:["Er kommt nicht"],exp:"nicht al final"},
+    {p:"Traduce: '¿Hablas alemán?'",ans:["Sprichst du Deutsch?"],exp:"Verbo al inicio en preguntas"},
+    {p:"Traduce: 'Ella vive en Berlín'",ans:["Sie wohnt in Berlin"],exp:"wohnen → wohnt"},
+    {p:"Traduce: 'Hoy trabajo'",ans:["Heute arbeite ich"],exp:"Adverbio + verbo + sujeto"},
+    {p:"Traduce: 'No estoy cansado'",ans:["Ich bin nicht müde"],exp:"nicht antes del adjetivo"},
+    {p:"Traduce: '¿Dónde vives?'",ans:["Wo wohnst du?"],exp:"Wo + verbo + sujeto"},
+    {p:"Traduce: 'Soy estudiante'",ans:["Ich bin Student"],exp:"Ich bin + sustantivo sin artículo para profesión"},
+    {p:"Traduce: '¿Tienes hambre?'",ans:["Hast du Hunger?"],exp:"Verbo haben al inicio"},
+  ]
+},
+{
+  id:4, titulo:"Casos (Kasus)", icono:"📐",
+  mc:[
+    {p:"¿Para qué se usa el caso Nominativo?",ops:["Objeto directo","Sujeto de la oración","Objeto indirecto","Con preposiciones"],r:1,exp:"Nominativo = sujeto. El que realiza la acción."},
+    {p:"¿Para qué se usa el Acusativo?",ops:["Sujeto","Objeto indirecto","Objeto directo","Con 'mit'"],r:2,exp:"Acusativo = objeto directo. ¿A quién/qué?"},
+    {p:"'Ich sehe <em>den</em> Mann' — 'den' indica:",ops:["Nominativo","Dativo","Acusativo","Genitivo"],r:2,exp:"'den' es artículo masculino en acusativo."},
+    {p:"¿Cuál es el artículo masculino en acusativo?",ops:["der","die","den","dem"],r:2,exp:"Masculino acusativo → den. Ej: Ich sehe den Hund."},
+    {p:"¿Qué artículo usa 'das Kind' en acusativo?",ops:["den","das","dem","die"],r:1,exp:"Neutro no cambia en acusativo → das Kind."},
+    {p:"'Ich helfe <em>dem</em> Mann' — 'dem' indica:",ops:["Nominativo","Acusativo","Dativo","Genitivo"],r:2,exp:"'dem' = dativo masculino. helfen rige dativo."},
+    {p:"¿Cuál es el artículo femenino en acusativo?",ops:["der","die","den","dem"],r:1,exp:"Femenino no cambia en acusativo → die."},
+    {p:"El verbo 'haben' rige:",ops:["Dativo","Nominativo","Acusativo","Genitivo"],r:2,exp:"haben + acusativo. Ej: Ich habe einen Hund."},
+    {p:"¿Qué caso usa la preposición 'mit'?",ops:["Nominativo","Acusativo","Dativo","Genitivo"],r:2,exp:"'mit' siempre rige dativo. Ej: mit dem Auto."},
+    {p:"¿Qué artículo indefinido se usa en acusativo masculino?",ops:["ein","eine","einen","einem"],r:2,exp:"Masculino acusativo indefinido → einen."},
+  ],
+  fill:[
+    {p:"Ich sehe ___ Hund. (Veo el perro — acusativo)",ans:["den"],exp:"Masculino acusativo → den"},
+    {p:"Ich habe ___ Buch. (Tengo un libro — acusativo neutro)",ans:["ein"],exp:"Neutro acusativo indefinido → ein"},
+    {p:"Er kauft ___ Auto. (Compra un carro)",ans:["ein"],exp:"Neutro acusativo indefinido → ein"},
+    {p:"Ich helfe ___ Mann. (Ayudo al hombre — dativo)",ans:["dem"],exp:"Masculino dativo → dem"},
+    {p:"Sie kauft ___ Kleid. (Compra un vestido — femenino acus.)",ans:["ein","eine"],exp:"Femenino acusativo indefinido → ein/eine → aquí: ein"},
+    {p:"Ich sehe ___ Frau. (Veo a la mujer)",ans:["die"],exp:"Femenino acusativo → die (no cambia)"},
+    {p:"Er fährt mit ___ Auto. (Viaja con el carro — dativo)",ans:["dem"],exp:"Neutro dativo → dem"},
+    {p:"Ich kaufe ___ Buch. (Compro un libro)",ans:["ein"],exp:"Neutro acusativo → ein"},
+    {p:"Das ist ___ Mann. (Ese es un hombre — nominativo)",ans:["ein"],exp:"Masculino nominativo indefinido → ein"},
+    {p:"Wir helfen ___ Kind. (Ayudamos al niño — dativo)",ans:["dem"],exp:"Neutro dativo → dem"},
+  ],
+  tr:[
+    {p:"Traduce: 'Veo el perro'",ans:["Ich sehe den Hund"],exp:"den = acusativo masculino"},
+    {p:"Traduce: 'Tengo un libro'",ans:["Ich habe ein Buch"],exp:"ein Buch = acusativo neutro"},
+    {p:"Traduce: 'Compro un carro'",ans:["Ich kaufe ein Auto"],exp:"ein Auto = acusativo neutro"},
+    {p:"Traduce: 'Ayudo al hombre'",ans:["Ich helfe dem Mann"],exp:"dem = dativo masculino"},
+    {p:"Traduce: 'Veo a la mujer'",ans:["Ich sehe die Frau"],exp:"die = acusativo femenino (no cambia)"},
+    {p:"Traduce: 'Viajo con el carro'",ans:["Ich fahre mit dem Auto"],exp:"mit + dativo → mit dem"},
+    {p:"Traduce: 'Ese es un hombre'",ans:["Das ist ein Mann"],exp:"Nominativo → ein Mann"},
+    {p:"Traduce: 'Compro un vestido'",ans:["Ich kaufe ein Kleid"],exp:"Kleid = neutro → ein Kleid"},
+    {p:"Traduce: 'El niño ayuda'",ans:["Das Kind hilft"],exp:"Das Kind = nominativo, sujeto"},
+    {p:"Traduce: 'Tengo un perro'",ans:["Ich habe einen Hund"],exp:"Masculino acusativo → einen"},
+  ]
+},
+{
+  id:5, titulo:"Casos Nominativos", icono:"🔤",
+  mc:[
+    {p:"¿Cuál es el sujeto en 'Der Hund bellt'?",ops:["bellt","Hund","Der","Der Hund"],r:3,exp:"Der Hund = sujeto en nominativo."},
+    {p:"Artículo masculino nominativo:",ops:["den","dem","der","des"],r:2,exp:"Masculino nominativo → der."},
+    {p:"Artículo femenino nominativo:",ops:["die","der","dem","den"],r:0,exp:"Femenino nominativo → die."},
+    {p:"Artículo neutro nominativo:",ops:["der","die","das","dem"],r:2,exp:"Neutro nominativo → das."},
+    {p:"Artículo plural nominativo:",ops:["das","der","den","die"],r:3,exp:"Plural nominativo → die (para todos los géneros)."},
+    {p:"¿Cuál es correcto?",ops:["Den Hund ist groß","Die Hund ist groß","Das Hund ist groß","Der Hund ist groß"],r:3,exp:"Hund es masculino → Der Hund ist groß."},
+    {p:"¿Cuál es correcto?",ops:["Das Frau singt","Der Frau singt","Die Frau singt","Den Frau singt"],r:2,exp:"Frau es femenino → Die Frau singt."},
+    {p:"Artículo indefinido masculino nominativo:",ops:["einen","einem","eine","ein"],r:3,exp:"Masculino nominativo indefinido → ein."},
+    {p:"¿Cuál es correcto?",ops:["Eine Mann kommt","Ein Mann kommt","Einen Mann kommt","Einem Mann kommt"],r:1,exp:"Masculino nominativo → ein Mann kommt."},
+    {p:"¿Cuál es el sujeto en 'Die Kinder spielen'?",ops:["spielen","Kinder","Die Kinder","Die"],r:2,exp:"Die Kinder = sujeto plural en nominativo."},
+  ],
+  fill:[
+    {p:"___ Hund bellt. (El perro ladra)",ans:["Der"],exp:"Masculino nominativo → Der"},
+    {p:"___ Frau lacht. (La mujer ríe)",ans:["Die"],exp:"Femenino nominativo → Die"},
+    {p:"___ Kind weint. (El niño llora)",ans:["Das"],exp:"Neutro nominativo → Das"},
+    {p:"___ Männer arbeiten. (Los hombres trabajan)",ans:["Die"],exp:"Plural nominativo → Die"},
+    {p:"___ Mann ist groß. (El hombre es alto)",ans:["Der"],exp:"Masculino nominativo → Der"},
+    {p:"___ Buch ist neu. (El libro es nuevo)",ans:["Das"],exp:"Neutro nominativo → Das"},
+    {p:"___ Stadt ist groß. (La ciudad es grande)",ans:["Die"],exp:"Femenino nominativo → Die"},
+    {p:"___ Mann kommt. (Un hombre viene — indefinido)",ans:["Ein"],exp:"Masculino nominativo indefinido → Ein"},
+    {p:"___ Kind spielt. (Un niño juega — indefinido)",ans:["Ein"],exp:"Neutro nominativo indefinido → Ein"},
+    {p:"___ Frau singt. (Una mujer canta — indefinido)",ans:["Eine"],exp:"Femenino nominativo indefinido → Eine"},
+  ],
+  tr:[
+    {p:"Traduce: 'El perro ladra'",ans:["Der Hund bellt"],exp:"Der = masculino nominativo"},
+    {p:"Traduce: 'La mujer ríe'",ans:["Die Frau lacht"],exp:"Die = femenino nominativo"},
+    {p:"Traduce: 'El niño llora'",ans:["Das Kind weint"],exp:"Das = neutro nominativo"},
+    {p:"Traduce: 'Los hombres trabajan'",ans:["Die Männer arbeiten"],exp:"Die = plural nominativo"},
+    {p:"Traduce: 'El libro es nuevo'",ans:["Das Buch ist neu"],exp:"Das Buch, ist neu"},
+    {p:"Traduce: 'Un hombre viene'",ans:["Ein Mann kommt"],exp:"Ein = masculino nominativo indef."},
+    {p:"Traduce: 'Una mujer canta'",ans:["Eine Frau singt"],exp:"Eine = femenino nominativo indef."},
+    {p:"Traduce: 'La ciudad es grande'",ans:["Die Stadt ist groß"],exp:"Die = femenino nominativo"},
+    {p:"Traduce: 'Un niño juega'",ans:["Ein Kind spielt"],exp:"Ein = neutro nominativo indef."},
+    {p:"Traduce: 'Los niños juegan'",ans:["Die Kinder spielen"],exp:"Die = plural nominativo"},
+  ]
+},
+{
+  id:6, titulo:"Adjetivos: Terminaciones Nominativo", icono:"🎨",
+  mc:[
+    {p:"'Der <em>groß___</em> Hund' — terminación correcta:",ops:["groß","-e","-er","-es"],r:1,exp:"Después de artículo definido masculino nominativo → -e."},
+    {p:"'Die <em>schön___</em> Frau' — terminación:",ops:["-e","-er","-en","-es"],r:0,exp:"Después de die (femenino def.) → -e."},
+    {p:"'Das <em>klein___</em> Kind' — terminación:",ops:["-er","-en","-e","-es"],r:2,exp:"Después de das (neutro def.) → -e."},
+    {p:"'Ein <em>groß___</em> Hund' — terminación (masculino indef.):",ops:["-e","-es","-er","-en"],r:2,exp:"Después de ein (masculino indef.) → -er."},
+    {p:"'Eine <em>schön___</em> Frau' — terminación (femenino indef.):",ops:["-er","-e","-en","-es"],r:1,exp:"Después de eine (femenino indef.) → -e."},
+    {p:"'Ein <em>klein___</em> Kind' — terminación (neutro indef.):",ops:["-e","-er","-en","-es"],r:3,exp:"Después de ein (neutro indef.) → -es."},
+    {p:"'Die <em>alt___</em> Männer' — terminación (plural def.):",ops:["-e","-er","-en","-es"],r:2,exp:"Plural con artículo definido → -en."},
+    {p:"Completa: 'Der <em>jung___</em> Mann arbeitet'",ops:["junge","junger","junges","jungen"],r:0,exp:"def. masculino nominativo → jung-e."},
+    {p:"Completa: 'Das ist ein <em>gut___</em> Buch'",ops:["gutes","gute","guter","guten"],r:0,exp:"ein + neutro indef. nominativo → gut-es."},
+    {p:"Completa: 'Eine <em>klein___</em> Katze schläft'",ops:["kleines","kleiner","kleine","kleinen"],r:2,exp:"eine + femenino indef. → klein-e."},
+  ],
+  fill:[
+    {p:"Der groß___ Hund schläft. (El perro grande duerme)",ans:["e","große"],exp:"def. masc. nominativo → -e → große"},
+    {p:"Die schön___ Frau singt. (La mujer bonita canta)",ans:["e","schöne"],exp:"def. fem. nominativo → -e"},
+    {p:"Das klein___ Kind weint. (El niño pequeño llora)",ans:["e","kleine"],exp:"def. neutro nominativo → -e"},
+    {p:"Ein groß___ Hund kommt. (Un perro grande viene)",ans:["er","großer"],exp:"indef. masc. nominativo → -er"},
+    {p:"Eine jung___ Frau lacht. (Una mujer joven ríe)",ans:["e","junge"],exp:"indef. fem. nominativo → -e"},
+    {p:"Ein gut___ Buch liegt hier. (Un buen libro está aquí)",ans:["es","gutes"],exp:"indef. neutro nominativo → -es"},
+    {p:"Die alt___ Männer kommen. (Los hombres viejos vienen)",ans:["en","alten"],exp:"plural def. → -en"},
+    {p:"Der jung___ Mann arbeitet. (El hombre joven trabaja)",ans:["e","junge"],exp:"def. masc. nominativo → -e"},
+    {p:"Die kalt___ Milch ist gut. (La leche fría es buena)",ans:["e","kalte"],exp:"def. fem. nominativo → -e"},
+    {p:"Ein klein___ Kind spielt. (Un niño pequeño juega)",ans:["es","kleines"],exp:"indef. neutro nominativo → -es"},
+  ],
+  tr:[
+    {p:"Traduce: 'El perro grande duerme'",ans:["Der große Hund schläft"],exp:"große = adj. def. masc. nominativo"},
+    {p:"Traduce: 'La mujer bonita canta'",ans:["Die schöne Frau singt"],exp:"schöne = adj. def. fem. nominativo"},
+    {p:"Traduce: 'Un perro grande viene'",ans:["Ein großer Hund kommt"],exp:"großer = adj. indef. masc. nominativo"},
+    {p:"Traduce: 'Una mujer joven ríe'",ans:["Eine junge Frau lacht"],exp:"junge = adj. indef. fem. nominativo"},
+    {p:"Traduce: 'Un buen libro está aquí'",ans:["Ein gutes Buch liegt hier"],exp:"gutes = adj. indef. neutro nominativo"},
+    {p:"Traduce: 'El hombre joven trabaja'",ans:["Der junge Mann arbeitet"],exp:"junge = def. masc. nominativo"},
+    {p:"Traduce: 'El niño pequeño llora'",ans:["Das kleine Kind weint"],exp:"kleine = def. neutro nominativo"},
+    {p:"Traduce: 'Los hombres viejos vienen'",ans:["Die alten Männer kommen"],exp:"alten = plural def. nominativo"},
+    {p:"Traduce: 'La leche fría es buena'",ans:["Die kalte Milch ist gut"],exp:"kalte = def. fem. nominativo"},
+    {p:"Traduce: 'Un niño pequeño juega'",ans:["Ein kleines Kind spielt"],exp:"kleines = indef. neutro nominativo"},
+  ]
+},
+{
+  id:7, titulo:"Adjetivos I: Colores", icono:"🌈",
+  mc:[
+    {p:"¿Cómo se dice 'rojo' en alemán?",ops:["blau","rot","grün","gelb"],r:1,exp:"rot = rojo."},
+    {p:"¿Cómo se dice 'azul'?",ops:["rot","grün","blau","weiß"],r:2,exp:"blau = azul."},
+    {p:"¿Cómo se dice 'verde'?",ops:["gelb","grün","grau","braun"],r:1,exp:"grün = verde."},
+    {p:"¿Cómo se dice 'amarillo'?",ops:["weiß","schwarz","gelb","orange"],r:2,exp:"gelb = amarillo."},
+    {p:"¿Cómo se dice 'negro'?",ops:["weiß","schwarz","grau","braun"],r:1,exp:"schwarz = negro."},
+    {p:"¿Cómo se dice 'blanco'?",ops:["schwarz","grau","weiß","beige"],r:2,exp:"weiß = blanco."},
+    {p:"¿Cómo se dice 'marrón'?",ops:["grau","orange","lila","braun"],r:3,exp:"braun = marrón."},
+    {p:"¿Cómo se dice 'gris'?",ops:["grün","grau","braun","beige"],r:1,exp:"grau = gris."},
+    {p:"'Das Auto ist ___' (El carro es rojo)",ops:["blau","gelb","rot","grün"],r:2,exp:"rot = rojo. Das Auto ist rot."},
+    {p:"'Der Himmel ist ___' (El cielo es azul)",ops:["rot","grün","gelb","blau"],r:3,exp:"blau = azul. Der Himmel ist blau."},
+  ],
+  fill:[
+    {p:"Das Auto ist ___. (El carro es rojo)",ans:["rot"],exp:"rot = rojo"},
+    {p:"Der Himmel ist ___. (El cielo es azul)",ans:["blau"],exp:"blau = azul"},
+    {p:"Das Gras ist ___. (El pasto es verde)",ans:["grün"],exp:"grün = verde"},
+    {p:"Die Banane ist ___. (El plátano es amarillo)",ans:["gelb"],exp:"gelb = amarillo"},
+    {p:"Die Nacht ist ___. (La noche es negra)",ans:["schwarz"],exp:"schwarz = negro"},
+    {p:"Der Schnee ist ___. (La nieve es blanca)",ans:["weiß"],exp:"weiß = blanco"},
+    {p:"Der Kaffee ist ___. (El café es marrón)",ans:["braun"],exp:"braun = marrón"},
+    {p:"Der Elefant ist ___. (El elefante es gris)",ans:["grau"],exp:"grau = gris"},
+    {p:"Die Tomate ist ___. (El tomate es rojo)",ans:["rot"],exp:"rot = rojo"},
+    {p:"Das Meer ist ___. (El mar es azul)",ans:["blau"],exp:"blau = azul"},
+  ],
+  tr:[
+    {p:"Traduce: 'El carro es rojo'",ans:["Das Auto ist rot"],exp:"rot = rojo"},
+    {p:"Traduce: 'El cielo es azul'",ans:["Der Himmel ist blau"],exp:"blau = azul"},
+    {p:"Traduce: 'El pasto es verde'",ans:["Das Gras ist grün"],exp:"grün = verde"},
+    {p:"Traduce: 'La nieve es blanca'",ans:["Der Schnee ist weiß"],exp:"weiß = blanco"},
+    {p:"Traduce: 'La noche es negra'",ans:["Die Nacht ist schwarz"],exp:"schwarz = negro"},
+    {p:"Traduce: 'El plátano es amarillo'",ans:["Die Banane ist gelb"],exp:"gelb = amarillo"},
+    {p:"Traduce: 'El café es marrón'",ans:["Der Kaffee ist braun"],exp:"braun = marrón"},
+    {p:"Traduce: 'El elefante es gris'",ans:["Der Elefant ist grau"],exp:"grau = gris"},
+    {p:"Traduce: 'Un carro rojo' (indef. neutro)",ans:["Ein rotes Auto"],exp:"rotes = indef. neutro → -es"},
+    {p:"Traduce: 'Una flor azul' (indef. fem.)",ans:["Eine blaue Blume"],exp:"blaue = indef. fem. → -e"},
+  ]
+},
+{
+  id:8, titulo:"Adjetivos II: Otros", icono:"📝",
+  mc:[
+    {p:"¿Cómo se dice 'grande'?",ops:["klein","groß","alt","neu"],r:1,exp:"groß = grande."},
+    {p:"¿Cómo se dice 'pequeño'?",ops:["groß","alt","klein","jung"],r:2,exp:"klein = pequeño."},
+    {p:"¿Cómo se dice 'viejo' (edad/objeto)?",ops:["neu","jung","alt","gut"],r:2,exp:"alt = viejo/antiguo."},
+    {p:"¿Cómo se dice 'nuevo'?",ops:["alt","jung","gut","neu"],r:3,exp:"neu = nuevo."},
+    {p:"¿Cómo se dice 'bueno'?",ops:["schlecht","gut","schön","neu"],r:1,exp:"gut = bueno."},
+    {p:"¿Cómo se dice 'malo'?",ops:["gut","schön","schlecht","groß"],r:2,exp:"schlecht = malo."},
+    {p:"¿Cómo se dice 'bonito/hermoso'?",ops:["hässlich","schön","alt","kalt"],r:1,exp:"schön = bonito/hermoso."},
+    {p:"¿Cómo se dice 'caliente'?",ops:["kalt","heiß","warm","kühl"],r:1,exp:"heiß = caliente (muy). warm = tibio."},
+    {p:"¿Cómo se dice 'frío'?",ops:["warm","heiß","kalt","kühl"],r:2,exp:"kalt = frío."},
+    {p:"¿Cómo se dice 'rápido'?",ops:["langsam","schnell","laut","leise"],r:1,exp:"schnell = rápido. langsam = lento."},
+  ],
+  fill:[
+    {p:"Der Hund ist ___. (El perro es grande)",ans:["groß"],exp:"groß = grande"},
+    {p:"Das Kind ist ___. (El niño es pequeño)",ans:["klein"],exp:"klein = pequeño"},
+    {p:"Das Buch ist ___. (El libro es viejo)",ans:["alt"],exp:"alt = viejo"},
+    {p:"Das Auto ist ___. (El carro es nuevo)",ans:["neu"],exp:"neu = nuevo"},
+    {p:"Das Essen ist ___. (La comida es buena)",ans:["gut"],exp:"gut = bueno"},
+    {p:"Das Wetter ist ___. (El clima es malo)",ans:["schlecht"],exp:"schlecht = malo"},
+    {p:"Die Blume ist ___. (La flor es bonita)",ans:["schön"],exp:"schön = bonito"},
+    {p:"Der Tee ist ___. (El té está caliente)",ans:["heiß","warm"],exp:"heiß = caliente"},
+    {p:"Das Wasser ist ___. (El agua está fría)",ans:["kalt"],exp:"kalt = frío"},
+    {p:"Der Zug ist ___. (El tren es rápido)",ans:["schnell"],exp:"schnell = rápido"},
+  ],
+  tr:[
+    {p:"Traduce: 'El perro es grande'",ans:["Der Hund ist groß"],exp:"groß = grande"},
+    {p:"Traduce: 'El niño es pequeño'",ans:["Das Kind ist klein"],exp:"klein = pequeño"},
+    {p:"Traduce: 'El libro es viejo'",ans:["Das Buch ist alt"],exp:"alt = viejo"},
+    {p:"Traduce: 'El carro es nuevo'",ans:["Das Auto ist neu"],exp:"neu = nuevo"},
+    {p:"Traduce: 'La comida es buena'",ans:["Das Essen ist gut"],exp:"gut = bueno"},
+    {p:"Traduce: 'El clima es malo'",ans:["Das Wetter ist schlecht"],exp:"schlecht = malo"},
+    {p:"Traduce: 'La flor es bonita'",ans:["Die Blume ist schön"],exp:"schön = bonito"},
+    {p:"Traduce: 'El agua está fría'",ans:["Das Wasser ist kalt"],exp:"kalt = frío"},
+    {p:"Traduce: 'El tren es rápido'",ans:["Der Zug ist schnell"],exp:"schnell = rápido"},
+    {p:"Traduce: 'Un libro nuevo' (neutro indef.)",ans:["Ein neues Buch"],exp:"neues = indef. neutro -es"},
+  ]
+},
+{
+  id:9, titulo:"Caso Acusativo", icono:"🎯",
+  mc:[
+    {p:"¿Qué artículo masculino cambia en acusativo?",ops:["die → den","der → den","das → dem","die → der"],r:1,exp:"Solo el masculino cambia: der → den en acusativo."},
+    {p:"'Ich kaufe ___ Hund' (acusativo):",ops:["der","dem","den","die"],r:2,exp:"Masculino acusativo → den Hund."},
+    {p:"'Ich kaufe ___ Auto' (acusativo neutro):",ops:["den","dem","das","die"],r:2,exp:"Neutro no cambia → das Auto."},
+    {p:"'Ich kaufe ___ Blume' (acusativo femenino):",ops:["den","die","dem","der"],r:1,exp:"Femenino no cambia → die Blume."},
+    {p:"'Ich sehe einen ___' — ¿qué género?",ops:["femenino","neutro","plural","masculino"],r:3,exp:"'einen' es el artículo indefinido masculino en acusativo."},
+    {p:"¿Cuál verbo rige acusativo?",ops:["helfen","danken","kaufen","gefallen"],r:2,exp:"kaufen (comprar) rige acusativo."},
+    {p:"'Ich esse ___ Brot' (acusativo neutro indef.):",ops:["ein","einen","eine","einem"],r:0,exp:"Neutro acusativo indefinido → ein Brot."},
+    {p:"'Er liebt ___ Frau' (acusativo femenino def.):",ops:["der","den","die","dem"],r:2,exp:"Femenino no cambia → die Frau."},
+    {p:"'Wir haben ___ Hund' (acusativo masc. indef.):",ops:["ein","eine","einen","einem"],r:2,exp:"Masculino acusativo indefinido → einen Hund."},
+    {p:"¿Cuál oración usa acusativo correcto?",ops:["Ich sehe der Mann","Ich sehe den Mann","Ich sehe dem Mann","Ich sehe die Mann"],r:1,exp:"Masculino acusativo → den Mann."},
+  ],
+  fill:[
+    {p:"Ich kaufe ___ Hund. (Compro el perro — masc.)",ans:["den"],exp:"Masculino acusativo → den"},
+    {p:"Ich sehe ___ Auto. (Veo el carro — neutro)",ans:["das"],exp:"Neutro no cambia → das"},
+    {p:"Er liebt ___ Frau. (Ama a la mujer — fem.)",ans:["die"],exp:"Femenino no cambia → die"},
+    {p:"Ich esse ___ Brot. (Como el pan — neutro)",ans:["das"],exp:"Neutro no cambia → das"},
+    {p:"Wir haben ___ Hund. (Tenemos un perro — indef.)",ans:["einen"],exp:"Masc. acusativo indef. → einen"},
+    {p:"Sie kauft ___ Kleid. (Compra un vestido — indef.)",ans:["ein"],exp:"Neutro acusativo indef. → ein"},
+    {p:"Ich lese ___ Buch. (Leo un libro — indef.)",ans:["ein"],exp:"Neutro acusativo indef. → ein"},
+    {p:"Du siehst ___ Mann. (Ves al hombre — def.)",ans:["den"],exp:"Masculino acusativo → den"},
+    {p:"Ich kaufe ___ Blume. (Compro una flor — indef.)",ans:["eine"],exp:"Femenino acusativo indef. → eine"},
+    {p:"Er trinkt ___ Wasser. (Bebe el agua — neutro)",ans:["das"],exp:"Neutro no cambia → das"},
+  ],
+  tr:[
+    {p:"Traduce: 'Veo el perro'",ans:["Ich sehe den Hund"],exp:"den = masculino acusativo"},
+    {p:"Traduce: 'Compro el carro'",ans:["Ich kaufe das Auto"],exp:"das = neutro acusativo (no cambia)"},
+    {p:"Traduce: 'Él ama a la mujer'",ans:["Er liebt die Frau"],exp:"die = femenino acusativo (no cambia)"},
+    {p:"Traduce: 'Tenemos un perro'",ans:["Wir haben einen Hund"],exp:"einen = masculino acusativo indef."},
+    {p:"Traduce: 'Como el pan'",ans:["Ich esse das Brot"],exp:"das = neutro acusativo"},
+    {p:"Traduce: 'Leo un libro'",ans:["Ich lese ein Buch"],exp:"ein = neutro acusativo indef."},
+    {p:"Traduce: 'Compra un vestido'",ans:["Sie kauft ein Kleid"],exp:"ein = neutro acusativo indef."},
+    {p:"Traduce: 'Bebe el agua'",ans:["Er trinkt das Wasser"],exp:"das = neutro acusativo"},
+    {p:"Traduce: 'Compro una flor'",ans:["Ich kaufe eine Blume"],exp:"eine = femenino acusativo indef."},
+    {p:"Traduce: 'Ves al hombre'",ans:["Du siehst den Mann"],exp:"den = masculino acusativo def."},
+  ]
+},
+{
+  id:10, titulo:"Terminaciones de Adjetivos", icono:"🔡",
+  mc:[
+    {p:"Adjetivo después de 'der' (masc. nom.) termina en:",ops:["-er","-en","-e","-es"],r:2,exp:"Después de artículo definido → -e."},
+    {p:"Adjetivo después de 'den' (masc. acus.) termina en:",ops:["-e","-es","-er","-en"],r:3,exp:"Masculino acusativo definido → -en."},
+    {p:"Adjetivo después de 'ein' (masc. nom.) termina en:",ops:["-e","-es","-en","-er"],r:3,exp:"Después de 'ein' masculino nominativo → -er."},
+    {p:"Adjetivo después de 'eine' (fem. nom.) termina en:",ops:["-er","-es","-en","-e"],r:3,exp:"Después de 'eine' → -e."},
+    {p:"Adjetivo después de 'ein' (neutro nom.) termina en:",ops:["-e","-er","-en","-es"],r:3,exp:"Después de 'ein' neutro nominativo → -es."},
+    {p:"Adjetivo después de 'das' (neutro nom.) termina en:",ops:["-er","-en","-es","-e"],r:3,exp:"Después de artículo definido → -e."},
+    {p:"Adjetivo después de 'die' (plural nom.) termina en:",ops:["-e","-er","-es","-en"],r:3,exp:"Plural con artículo definido → -en."},
+    {p:"'Ich sehe den ___ Mann' — terminación del adjetivo:",ops:["groß+e","groß+er","groß+en","groß+es"],r:2,exp:"Masculino acusativo definido → -en → großen."},
+    {p:"'Das ist ein ___ Kind' — terminación:",ops:["gut+e","gut+es","gut+er","gut+en"],r:1,exp:"'ein' neutro nominativo → -es → gutes."},
+    {p:"'Die ___ Frau singt' — terminación:",ops:["schön+en","schön+er","schön+e","schön+es"],r:2,exp:"'die' femenino nominativo → -e → schöne."},
+  ],
+  fill:[
+    {p:"Der klein___ Hund schläft. (def. masc. nom.)",ans:["e","kleine"],exp:"def. masc. nom. → -e"},
+    {p:"Ich sehe den groß___ Hund. (def. masc. acus.)",ans:["en","großen"],exp:"def. masc. acus. → -en"},
+    {p:"Ein jung___ Mann kommt. (indef. masc. nom.)",ans:["er","junger"],exp:"indef. masc. nom. → -er"},
+    {p:"Eine schön___ Frau lacht. (indef. fem. nom.)",ans:["e","schöne"],exp:"indef. fem. nom. → -e"},
+    {p:"Ein gut___ Buch liegt hier. (indef. neutro nom.)",ans:["es","gutes"],exp:"indef. neutro nom. → -es"},
+    {p:"Das alt___ Buch ist hier. (def. neutro nom.)",ans:["e","alte"],exp:"def. neutro nom. → -e"},
+    {p:"Die kalt___ Milch ist gut. (def. fem. nom.)",ans:["e","kalte"],exp:"def. fem. nom. → -e"},
+    {p:"Ich kaufe einen rot___ Apfel. (def. masc. acus.)",ans:["en","roten"],exp:"def. masc. acus. → -en"},
+    {p:"Sie hat ein blau___ Kleid. (indef. neutro acus.)",ans:["es","blaues"],exp:"indef. neutro acus. → -es"},
+    {p:"Die alt___ Männer schlafen. (def. plural)",ans:["en","alten"],exp:"plural def. → -en"},
+  ],
+  tr:[
+    {p:"Traduce: 'El perro pequeño duerme'",ans:["Der kleine Hund schläft"],exp:"kleine = def. masc. nom. → -e"},
+    {p:"Traduce: 'Veo al perro grande'",ans:["Ich sehe den großen Hund"],exp:"großen = def. masc. acus. → -en"},
+    {p:"Traduce: 'Un hombre joven viene'",ans:["Ein junger Mann kommt"],exp:"junger = indef. masc. nom. → -er"},
+    {p:"Traduce: 'Una mujer bonita ríe'",ans:["Eine schöne Frau lacht"],exp:"schöne = indef. fem. nom. → -e"},
+    {p:"Traduce: 'Un buen libro está aquí'",ans:["Ein gutes Buch liegt hier"],exp:"gutes = indef. neutro nom. → -es"},
+    {p:"Traduce: 'El libro viejo está aquí'",ans:["Das alte Buch ist hier"],exp:"alte = def. neutro nom. → -e"},
+    {p:"Traduce: 'Compro una manzana roja'",ans:["Ich kaufe einen roten Apfel"],exp:"roten = def. masc. acus. → -en"},
+    {p:"Traduce: 'Ella tiene un vestido azul'",ans:["Sie hat ein blaues Kleid"],exp:"blaues = indef. neutro acus. → -es"},
+    {p:"Traduce: 'Los hombres viejos duermen'",ans:["Die alten Männer schlafen"],exp:"alten = plural def. → -en"},
+    {p:"Traduce: 'La leche fría es buena'",ans:["Die kalte Milch ist gut"],exp:"kalte = def. fem. nom. → -e"},
+  ]
+},
+{
+  id:11, titulo:"Verbos Reflexivos", icono:"🔄",
+  mc:[
+    {p:"¿Cómo se llama el pronombre reflexivo de 'ich'?",ops:["sich","mich","dich","euch"],r:1,exp:"'ich' usa 'mich'. Ej: Ich wasche mich."},
+    {p:"Pronombre reflexivo de 'du':",ops:["sich","mich","dich","euch"],r:2,exp:"'du' usa 'dich'. Ej: Du wäschst dich."},
+    {p:"Pronombre reflexivo de 'er/sie/es':",ops:["mich","dich","sich","euch"],r:2,exp:"3ª persona usa 'sich'."},
+    {p:"¿Qué significa 'sich setzen'?",ops:["levantarse","sentarse","acostarse","dormirse"],r:1,exp:"sich setzen = sentarse."},
+    {p:"¿Qué significa 'sich waschen'?",ops:["vestirse","peinarse","lavarse","afeitarse"],r:2,exp:"sich waschen = lavarse."},
+    {p:"'Ich ___ mich' (me lavo)",ops:["wasche","wascht","wäschst","waschen"],r:0,exp:"ich wasche mich = me lavo."},
+    {p:"¿Qué significa 'sich anziehen'?",ops:["desvestirse","bañarse","vestirse","peinarse"],r:2,exp:"sich anziehen = vestirse."},
+    {p:"'Er ___ sich' (él se sienta)",ops:["setze","setzt","setzt","setzen"],r:2,exp:"er setzt sich = él se sienta."},
+    {p:"Pronombre reflexivo de 'wir':",ops:["mich","dich","sich","uns"],r:3,exp:"'wir' usa 'uns'. Ej: Wir setzen uns."},
+    {p:"¿Qué significa 'sich freuen'?",ops:["enojarse","aburrirse","alegrarse","cansarse"],r:2,exp:"sich freuen = alegrarse."},
+  ],
+  fill:[
+    {p:"Ich wasche ___. (Me lavo)",ans:["mich"],exp:"ich → mich"},
+    {p:"Du wäschst ___. (Te lavas)",ans:["dich"],exp:"du → dich"},
+    {p:"Er setzt ___. (Él se sienta)",ans:["sich"],exp:"er → sich"},
+    {p:"Wir setzen ___. (Nos sentamos)",ans:["uns"],exp:"wir → uns"},
+    {p:"Ich ziehe ___ an. (Me visto)",ans:["mich"],exp:"ich → mich"},
+    {p:"Sie freut ___. (Ella se alegra)",ans:["sich"],exp:"sie → sich"},
+    {p:"Ihr setzt ___. (Ustedes se sientan)",ans:["euch"],exp:"ihr → euch"},
+    {p:"Du freust ___. (Te alegras)",ans:["dich"],exp:"du → dich"},
+    {p:"Wir waschen ___. (Nos lavamos)",ans:["uns"],exp:"wir → uns"},
+    {p:"Er zieht ___ an. (Él se viste)",ans:["sich"],exp:"er → sich"},
+  ],
+  tr:[
+    {p:"Traduce: 'Me lavo'",ans:["Ich wasche mich"],exp:"wasche + mich"},
+    {p:"Traduce: 'Te sientas'",ans:["Du setzt dich"],exp:"setzt + dich"},
+    {p:"Traduce: 'Él se viste'",ans:["Er zieht sich an"],exp:"zieht + sich + an (separable)"},
+    {p:"Traduce: 'Nos alegramos'",ans:["Wir freuen uns"],exp:"freuen + uns"},
+    {p:"Traduce: 'Ella se lava'",ans:["Sie wäscht sich"],exp:"wäscht + sich"},
+    {p:"Traduce: 'Me siento'",ans:["Ich setze mich"],exp:"setze + mich"},
+    {p:"Traduce: 'Te vistes'",ans:["Du ziehst dich an"],exp:"ziehst + dich + an"},
+    {p:"Traduce: 'Él se alegra'",ans:["Er freut sich"],exp:"freut + sich"},
+    {p:"Traduce: 'Ustedes se sientan'",ans:["Ihr setzt euch"],exp:"setzt + euch"},
+    {p:"Traduce: 'Nos vestimos'",ans:["Wir ziehen uns an"],exp:"ziehen + uns + an"},
+  ]
+},
+{
+  id:12, titulo:"Entrenamiento Acusativo", icono:"🏋️",
+  mc:[
+    {p:"¿Cuál artículo usa 'Mann' en acusativo?",ops:["der","dem","den","die"],r:2,exp:"Masculino acusativo → den Mann."},
+    {p:"¿Cuál artículo usa 'Buch' en acusativo?",ops:["den","dem","das","die"],r:2,exp:"Neutro no cambia → das Buch."},
+    {p:"¿Cuál artículo indefinido usa 'Hund' en acusativo?",ops:["ein","einen","einem","eine"],r:1,exp:"Masculino acusativo indef. → einen."},
+    {p:"'Ich sehe ___ Kind'",ops:["den","das","die","dem"],r:1,exp:"Neutro acusativo → das Kind."},
+    {p:"'Er kauft ___ Brot'",ops:["einen","eine","ein","dem"],r:2,exp:"Neutro acusativo indef. → ein Brot."},
+    {p:"'Sie liebt ___ Mann'",ops:["der","den","dem","die"],r:1,exp:"Masculino acusativo → den Mann."},
+    {p:"'Wir essen ___ Apfel'",ops:["einen","ein","eine","einem"],r:0,exp:"Masculino acusativo indef. → einen Apfel."},
+    {p:"'Ich trinke ___ Milch'",ops:["den","das","die","dem"],r:2,exp:"Femenino no cambia → die Milch."},
+    {p:"'Du siehst ___ Frau'",ops:["der","den","die","dem"],r:2,exp:"Femenino no cambia → die Frau."},
+    {p:"'Er hat ___ Auto'",ops:["einen","eine","ein","dem"],r:2,exp:"Neutro acusativo indef. → ein Auto."},
+  ],
+  fill:[
+    {p:"Ich kaufe ___ Apfel. (Compro una manzana — masc.)",ans:["einen"],exp:"Masculino acusativo indef. → einen"},
+    {p:"Er sieht ___ Kind. (Ve al niño — neutro)",ans:["das"],exp:"Neutro acusativo def. → das"},
+    {p:"Sie trinkt ___ Milch. (Bebe la leche — fem.)",ans:["die"],exp:"Femenino acusativo → die"},
+    {p:"Wir kaufen ___ Buch. (Compramos el libro)",ans:["das"],exp:"Neutro acusativo def. → das"},
+    {p:"Ich esse ___ Brot. (Como el pan)",ans:["das"],exp:"Neutro acusativo def. → das"},
+    {p:"Er hat ___ Hund. (Tiene un perro)",ans:["einen"],exp:"Masculino acusativo indef. → einen"},
+    {p:"Sie sieht ___ Mann. (Ve al hombre)",ans:["den"],exp:"Masculino acusativo def. → den"},
+    {p:"Ich kaufe ___ Auto. (Compro un carro)",ans:["ein"],exp:"Neutro acusativo indef. → ein"},
+    {p:"Du trinkst ___ Wasser. (Bebes el agua)",ans:["das"],exp:"Neutro acusativo def. → das"},
+    {p:"Wir haben ___ Kind. (Tenemos un hijo)",ans:["ein"],exp:"Neutro acusativo indef. → ein"},
+  ],
+  tr:[
+    {p:"Traduce: 'Compro una manzana'",ans:["Ich kaufe einen Apfel"],exp:"einen = masc. acusativo indef."},
+    {p:"Traduce: 'Bebo la leche'",ans:["Ich trinke die Milch"],exp:"die = fem. acusativo"},
+    {p:"Traduce: 'Ve al niño'",ans:["Er sieht das Kind"],exp:"das = neutro acusativo"},
+    {p:"Traduce: 'Tengo un perro'",ans:["Ich habe einen Hund"],exp:"einen = masc. acusativo indef."},
+    {p:"Traduce: 'Como el pan'",ans:["Ich esse das Brot"],exp:"das = neutro acusativo"},
+    {p:"Traduce: 'Compra un carro'",ans:["Er kauft ein Auto"],exp:"ein = neutro acusativo indef."},
+    {p:"Traduce: 'Veo al hombre'",ans:["Ich sehe den Mann"],exp:"den = masc. acusativo def."},
+    {p:"Traduce: 'Ella bebe agua'",ans:["Sie trinkt das Wasser","Sie trinkt Wasser"],exp:"das Wasser o solo Wasser"},
+    {p:"Traduce: 'Tenemos un hijo'",ans:["Wir haben ein Kind"],exp:"ein = neutro acusativo indef."},
+    {p:"Traduce: 'Bebes el agua'",ans:["Du trinkst das Wasser"],exp:"das = neutro acusativo"},
+  ]
+},
+{
+  id:13, titulo:"Números 1 — Regulares", icono:"🔢",
+  mc:[
+    {p:"¿Cómo se dice '1' en alemán?",ops:["zwei","drei","eins","vier"],r:2,exp:"eins = 1. (ein/eine cuando precede sustantivo)"},
+    {p:"¿Cómo se dice '5'?",ops:["vier","fünf","sechs","sieben"],r:1,exp:"fünf = 5."},
+    {p:"¿Cómo se dice '10'?",ops:["neun","zehn","elf","zwölf"],r:1,exp:"zehn = 10."},
+    {p:"¿Cómo se dice '20'?",ops:["zwanzig","dreißig","vierzig","zwölf"],r:0,exp:"zwanzig = 20."},
+    {p:"¿Cuánto es 'dreizehn'?",ops:["30","3","13","33"],r:2,exp:"dreizehn = 13 (drei=3 + zehn=10)."},
+    {p:"¿Cómo se dice '100'?",ops:["zehn","hundert","tausend","zwanzig"],r:1,exp:"hundert = 100."},
+    {p:"¿Cómo se dice '21'?",ops:["zwanzigeins","einundzwanzig","zweiundzwanzig","dreiundzwanzig"],r:1,exp:"einundzwanzig = 21 (ein + und + zwanzig)."},
+    {p:"¿Cuánto es 'fünfzig'?",ops:["15","55","50","45"],r:2,exp:"fünfzig = 50."},
+    {p:"¿Cómo se dice '8'?",ops:["sieben","acht","neun","sechs"],r:1,exp:"acht = 8."},
+    {p:"¿Cuánto es 'siebenunddreißig'?",ops:["73","37","17","27"],r:1,exp:"sieben(7) + und + dreißig(30) = 37."},
+  ],
+  fill:[
+    {p:"1 = ___ (uno)",ans:["eins","ein"],exp:"eins o ein"},
+    {p:"5 = ___ (cinco)",ans:["fünf"],exp:"fünf = 5"},
+    {p:"10 = ___ (diez)",ans:["zehn"],exp:"zehn = 10"},
+    {p:"20 = ___ (veinte)",ans:["zwanzig"],exp:"zwanzig = 20"},
+    {p:"13 = ___ (trece)",ans:["dreizehn"],exp:"dreizehn = 13"},
+    {p:"100 = ___ (cien)",ans:["hundert"],exp:"hundert = 100"},
+    {p:"21 = ___ (veintiuno)",ans:["einundzwanzig"],exp:"einundzwanzig = 21"},
+    {p:"50 = ___ (cincuenta)",ans:["fünfzig"],exp:"fünfzig = 50"},
+    {p:"8 = ___ (ocho)",ans:["acht"],exp:"acht = 8"},
+    {p:"37 = ___ (treinta y siete)",ans:["siebenunddreißig"],exp:"siebenunddreißig = 37"},
+  ],
+  tr:[
+    {p:"Traduce: 'Tengo dos perros'",ans:["Ich habe zwei Hunde"],exp:"zwei = 2, Hunde = perros (plural)"},
+    {p:"Traduce: 'Ella tiene tres hijos'",ans:["Sie hat drei Kinder"],exp:"drei = 3, Kinder = hijos"},
+    {p:"Traduce: 'Cien euros'",ans:["hundert Euro"],exp:"hundert = 100, Euro (no varía)"},
+    {p:"Traduce: 'Soy el número uno'",ans:["Ich bin Nummer eins"],exp:"Nummer eins"},
+    {p:"Traduce: '¿Cuántos años tienes?'",ans:["Wie alt bist du?"],exp:"Wie alt = cuántos años"},
+    {p:"Traduce: 'Tengo veinte años'",ans:["Ich bin zwanzig Jahre alt"],exp:"zwanzig = 20"},
+    {p:"Traduce: 'Cinco minutos'",ans:["fünf Minuten"],exp:"fünf = 5"},
+    {p:"Traduce: 'El tercer piso'",ans:["das dritte Stockwerk","dritter Stock"],exp:"dritte/dritter = tercero"},
+    {p:"Traduce: 'Dos cafés, por favor'",ans:["Zwei Kaffee, bitte"],exp:"Zwei = dos"},
+    {p:"Traduce: 'Cuesta diez euros'",ans:["Es kostet zehn Euro"],exp:"zehn = 10"},
+  ]
+},
+{
+  id:14, titulo:"Números 2 — Ordinales y Fechas", icono:"📅",
+  mc:[
+    {p:"¿Cómo se dice 'primero' (ordinal)?",ops:["erste","zweite","dritte","vierte"],r:0,exp:"erst- = primero. Ej: der erste Tag."},
+    {p:"¿Cómo se dice 'segundo'?",ops:["erste","zweite","dritte","vierte"],r:1,exp:"zweit- = segundo."},
+    {p:"¿Cómo se dice 'tercero'?",ops:["erste","zweite","dritte","vierte"],r:2,exp:"dritt- = tercero (irregular)."},
+    {p:"¿Cómo se pregunta la fecha?",ops:["Wann ist heute?","Den Wievielten haben wir heute?","Welches Datum?","Was ist heute?"],r:1,exp:"Den Wievielten haben wir heute? = ¿Qué fecha es hoy?"},
+    {p:"'Der erste Januar' = ",ops:["1 de enero","11 de enero","1 de julio","primero de junio"],r:0,exp:"erste = primero, Januar = enero."},
+    {p:"¿Cómo se dice 'el cinco de marzo'?",ops:["der fünfte März","der fünf März","am fünfte März","der März fünf"],r:0,exp:"der fünfte März = el 5 de marzo."},
+    {p:"¿Cómo se dice 'en enero'?",ops:["im Januar","am Januar","in Januar","bei Januar"],r:0,exp:"'im' + nombre de mes = en enero."},
+    {p:"Ordinal de 7 (siete):",ops:["siebt-","sieben-","siebte-","siebnt-"],r:2,exp:"siebt- = séptimo. Ej: der siebte Tag."},
+    {p:"¿Cómo se dice 'el año 2000'?",ops:["das Jahr zweitausend","im Jahr zweitausend","Jahr zwei-null-null-null","Jahr zweitausend"],r:1,exp:"im Jahr zweitausend = en el año 2000."},
+    {p:"¿Cómo se dice 'hoy es lunes'?",ops:["Heute Montag ist","Heute ist Montag","Montag ist heute","Ist heute Montag"],r:1,exp:"Heute ist Montag = Hoy es lunes."},
+  ],
+  fill:[
+    {p:"Der ___ Januar ist Neujahr. (El primero de enero es Año Nuevo)",ans:["erste"],exp:"erste = primero"},
+    {p:"Heute ist ___ Mai. (Hoy es cinco de mayo — ordinal)",ans:["fünfte","der fünfte"],exp:"fünfte = quinto"},
+    {p:"Ich habe ___ September Geburtstag. (Mi cumpleaños es el 3 de septiembre)",ans:["dritten","am dritten"],exp:"dritten = tercero (en dativo con 'am')"},
+    {p:"Wir sind ___ Oktober. (Estamos en octubre — mes)",ans:["im"],exp:"im + mes = en el mes"},
+    {p:"Das ist der ___ Tag. (Es el segundo día)",ans:["zweite"],exp:"zweite = segundo"},
+    {p:"Heute ist der ___ März. (Hoy es el 10 de marzo)",ans:["zehnte"],exp:"zehnte = décimo"},
+    {p:"Sie ist ___ November geboren. (Nació en noviembre)",ans:["im"],exp:"im + mes"},
+    {p:"Der ___ Platz ist frei. (El primer lugar está libre)",ans:["erste"],exp:"erste = primero"},
+    {p:"Wir treffen uns ___ Montag. (Nos vemos el lunes)",ans:["am"],exp:"am + día = el lunes"},
+    {p:"Das ist der ___ Versuch. (Es el tercer intento)",ans:["dritte"],exp:"dritte = tercero"},
+  ],
+  tr:[
+    {p:"Traduce: 'El primero de enero'",ans:["Der erste Januar","Am ersten Januar"],exp:"erste/ersten = primero"},
+    {p:"Traduce: 'Hoy es lunes'",ans:["Heute ist Montag"],exp:"Heute ist + día"},
+    {p:"Traduce: '¿Qué fecha es hoy?'",ans:["Den Wievielten haben wir heute?","Welches Datum ist heute?"],exp:"Fórmula estándar"},
+    {p:"Traduce: 'En enero'",ans:["Im Januar"],exp:"im + mes"},
+    {p:"Traduce: 'El cinco de marzo'",ans:["Der fünfte März","Am fünften März"],exp:"fünfte/fünften = quinto"},
+    {p:"Traduce: 'Mi cumpleaños es el 3 de mayo'",ans:["Mein Geburtstag ist am dritten Mai"],exp:"am dritten = el tercero"},
+    {p:"Traduce: 'Es el segundo día'",ans:["Es ist der zweite Tag"],exp:"zweite = segundo"},
+    {p:"Traduce: 'El año 2024'",ans:["das Jahr zweitausendvierundzwanzig","im Jahr 2024"],exp:"zweitausend + vierundzwanzig"},
+    {p:"Traduce: 'El lunes'",ans:["am Montag","Montag"],exp:"am Montag = el lunes"},
+    {p:"Traduce: 'El primer lugar'",ans:["der erste Platz"],exp:"erste = primero"},
+  ]
+},
+{
+  id:15, titulo:"La Hora", icono:"🕐",
+  mc:[
+    {p:"¿Cómo se pregunta la hora?",ops:["Was ist Uhr?","Wie spät ist es?","Wann ist die Uhr?","Welche Zeit?"],r:1,exp:"Wie spät ist es? = ¿Qué hora es?"},
+    {p:"'Es ist drei Uhr' significa:",ops:["Son las 2","Son las 3","Son las 13","Son las 30"],r:1,exp:"drei Uhr = las 3 en punto."},
+    {p:"'Es ist halb vier' significa:",ops:["3:30","4:30","3:00","4:15"],r:0,exp:"halb vier = 3:30 (mitad camino hacia las 4)."},
+    {p:"'Viertel nach zwei' significa:",ops:["2:45","1:45","2:15","2:30"],r:2,exp:"Viertel nach zwei = 2:15 (cuarto después de las 2)."},
+    {p:"'Viertel vor drei' significa:",ops:["2:45","3:15","3:45","2:15"],r:0,exp:"Viertel vor drei = 2:45 (cuarto antes de las 3)."},
+    {p:"¿Cómo se dice '8:30'?",ops:["halb neun","halb acht","viertel nach acht","halb sieben"],r:0,exp:"halb neun = 8:30 (mitad camino hacia las 9)."},
+    {p:"'Fünf nach sechs' significa:",ops:["6:50","6:05","5:06","6:15"],r:1,exp:"fünf nach sechs = 6:05."},
+    {p:"¿Cómo se dice 'a las 5'?",ops:["um fünf Uhr","bei fünf","an fünf","mit fünf"],r:0,exp:"'um' + hora = a las. Um fünf Uhr."},
+    {p:"'Zehn vor sieben' significa:",ops:["7:10","6:50","6:10","7:50"],r:1,exp:"zehn vor sieben = 6:50 (10 min antes de las 7)."},
+    {p:"¿Cómo se dice '12:00 (mediodía)'?",ops:["Mitternacht","Mittag","Mittagessen","Mitternacht"],r:1,exp:"Mittag = mediodía. Mitternacht = medianoche."},
+  ],
+  fill:[
+    {p:"Wie ___ ist es? (¿Qué hora es?)",ans:["spät"],exp:"Wie spät ist es?"},
+    {p:"Es ist ___ Uhr. (Son las tres)",ans:["drei"],exp:"drei = 3"},
+    {p:"Es ist ___ vier. (Son las 3:30)",ans:["halb"],exp:"halb vier = 3:30"},
+    {p:"Es ist Viertel ___ zwei. (Son las 2:15)",ans:["nach"],exp:"nach = después"},
+    {p:"Es ist Viertel ___ drei. (Son las 2:45)",ans:["vor"],exp:"vor = antes"},
+    {p:"___ fünf Uhr. (A las cinco)",ans:["Um"],exp:"Um = a las"},
+    {p:"Es ist ___ neun. (Son las 8:30)",ans:["halb"],exp:"halb neun = 8:30"},
+    {p:"Es ist zehn ___ sieben. (Son las 6:50)",ans:["vor"],exp:"vor = antes"},
+    {p:"Es ist fünf ___ sechs. (Son las 6:05)",ans:["nach"],exp:"nach = después"},
+    {p:"___ ist es? (¿Qué hora es?)",ans:["Wie spät"],exp:"Wie spät ist es?"},
+  ],
+  tr:[
+    {p:"Traduce: '¿Qué hora es?'",ans:["Wie spät ist es?"],exp:"Wie spät ist es?"},
+    {p:"Traduce: 'Son las tres'",ans:["Es ist drei Uhr"],exp:"drei Uhr = las 3"},
+    {p:"Traduce: 'Son las 3:30'",ans:["Es ist halb vier"],exp:"halb vier = 3:30"},
+    {p:"Traduce: 'Son las 2:15'",ans:["Es ist Viertel nach zwei"],exp:"Viertel nach dos = 2:15"},
+    {p:"Traduce: 'Son las 2:45'",ans:["Es ist Viertel vor drei"],exp:"Viertel vor drei = 2:45"},
+    {p:"Traduce: 'A las cinco'",ans:["Um fünf Uhr"],exp:"Um = a las"},
+    {p:"Traduce: 'Son las 8:30'",ans:["Es ist halb neun"],exp:"halb neun = 8:30"},
+    {p:"Traduce: 'Son las 6:50'",ans:["Es ist zehn vor sieben"],exp:"zehn vor sieben"},
+    {p:"Traduce: 'Son las 6:05'",ans:["Es ist fünf nach sechs"],exp:"fünf nach sechs"},
+    {p:"Traduce: 'Mediodía'",ans:["Mittag"],exp:"Mittag = mediodía"},
+  ]
+},
+{
+  id:16, titulo:"La Hora II", icono:"🕑",
+  mc:[
+    {p:"¿Cómo se dice '9:20'?",ops:["zwanzig nach neun","zwanzig vor neun","halb zehn","viertel nach neun"],r:0,exp:"zwanzig nach neun = 9:20."},
+    {p:"'Es ist zwanzig vor zehn' significa:",ops:["9:20","9:40","10:20","10:40"],r:1,exp:"zwanzig vor zehn = 9:40."},
+    {p:"¿Qué significa 'pünktlich'?",ops:["tarde","temprano","a tiempo/puntual","lento"],r:2,exp:"pünktlich = puntual / a tiempo."},
+    {p:"¿Cómo se dice 'a medianoche'?",ops:["um Mittag","um Mitternacht","um Abend","um Nacht"],r:1,exp:"um Mitternacht = a medianoche."},
+    {p:"'Fünf vor halb drei' significa:",ops:["2:25","2:35","3:25","2:55"],r:0,exp:"fünf vor halb drei = 2:25."},
+    {p:"¿Cómo se dice 'por la mañana'?",ops:["abends","morgens","nachts","mittags"],r:1,exp:"morgens = por la mañana."},
+    {p:"¿Cómo se dice '10:55'?",ops:["fünf nach elf","fünf vor elf","zehn vor elf","fünf vor zehn"],r:1,exp:"fünf vor elf = 10:55."},
+    {p:"¿Cómo se dice 'de madrugada'?",ops:["abends","morgens","nachts","mittags"],r:2,exp:"nachts = de noche/madrugada."},
+    {p:"'Um wie viel Uhr?' significa:",ops:["¿Qué hora es?","¿A qué hora?","¿Cuándo?","¿Cuánto tiempo?"],r:1,exp:"Um wie viel Uhr? = ¿A qué hora?"},
+    {p:"¿Cómo se dice 'por la tarde/noche'?",ops:["morgens","mittags","abends","nachts"],r:2,exp:"abends = por la tarde/noche (después del mediodía)."},
+  ],
+  fill:[
+    {p:"Es ist zwanzig ___ neun. (Son las 9:20)",ans:["nach"],exp:"nach = después"},
+    {p:"Es ist zwanzig ___ zehn. (Son las 9:40)",ans:["vor"],exp:"vor = antes"},
+    {p:"___ Mitternacht. (A medianoche)",ans:["Um"],exp:"Um = a las"},
+    {p:"Er kommt ___. (Él llega puntual)",ans:["pünktlich"],exp:"pünktlich = puntual"},
+    {p:"___ wie viel Uhr? (¿A qué hora?)",ans:["Um"],exp:"Um wie viel Uhr?"},
+    {p:"Ich lerne ___. (Aprendo por la mañana)",ans:["morgens"],exp:"morgens = por la mañana"},
+    {p:"Es ist fünf ___ elf. (Son las 10:55)",ans:["vor"],exp:"vor = antes"},
+    {p:"Er schläft ___. (Duerme de noche)",ans:["nachts"],exp:"nachts = de noche"},
+    {p:"Ich esse ___ Mittag. (Como al mediodía)",ans:["zu"],exp:"zu Mittag essen = comer al mediodía"},
+    {p:"Wir treffen uns ___. (Nos vemos por la tarde)",ans:["abends"],exp:"abends = por la tarde"},
+  ],
+  tr:[
+    {p:"Traduce: 'Son las 9:20'",ans:["Es ist zwanzig nach neun"],exp:"zwanzig nach neun"},
+    {p:"Traduce: 'Son las 9:40'",ans:["Es ist zwanzig vor zehn"],exp:"zwanzig vor zehn"},
+    {p:"Traduce: '¿A qué hora?'",ans:["Um wie viel Uhr?"],exp:"Um wie viel Uhr?"},
+    {p:"Traduce: 'Por la mañana'",ans:["morgens"],exp:"morgens = por la mañana"},
+    {p:"Traduce: 'Por la tarde'",ans:["abends","nachmittags"],exp:"abends o nachmittags"},
+    {p:"Traduce: 'A medianoche'",ans:["Um Mitternacht"],exp:"Um Mitternacht"},
+    {p:"Traduce: 'Él llega puntual'",ans:["Er kommt pünktlich"],exp:"pünktlich = puntual"},
+    {p:"Traduce: 'Son las 10:55'",ans:["Es ist fünf vor elf"],exp:"fünf vor elf"},
+    {p:"Traduce: 'De noche'",ans:["nachts"],exp:"nachts = de noche"},
+    {p:"Traduce: 'Aprendo por la mañana'",ans:["Ich lerne morgens"],exp:"morgens = por la mañana"},
+  ]
+},
+{
+  id:17, titulo:"Días de la Semana", icono:"📆",
+  mc:[
+    {p:"¿Cómo se dice 'lunes'?",ops:["Dienstag","Montag","Mittwoch","Donnerstag"],r:1,exp:"Montag = lunes."},
+    {p:"¿Cómo se dice 'miércoles'?",ops:["Montag","Dienstag","Mittwoch","Donnerstag"],r:2,exp:"Mittwoch = miércoles."},
+    {p:"¿Cómo se dice 'viernes'?",ops:["Mittwoch","Donnerstag","Freitag","Samstag"],r:2,exp:"Freitag = viernes."},
+    {p:"¿Cómo se dice 'domingo'?",ops:["Samstag","Sonntag","Freitag","Montag"],r:1,exp:"Sonntag = domingo."},
+    {p:"¿Qué día es 'Donnerstag'?",ops:["martes","miércoles","jueves","viernes"],r:2,exp:"Donnerstag = jueves."},
+    {p:"¿Cómo se dice 'el lunes'?",ops:["in Montag","am Montag","beim Montag","an Montag"],r:1,exp:"'am' + día = el lunes."},
+    {p:"'Am Wochenende' significa:",ops:["en la semana","el fin de semana","entre semana","el lunes"],r:1,exp:"Wochenende = fin de semana."},
+    {p:"¿Qué día es 'Dienstag'?",ops:["lunes","miércoles","jueves","martes"],r:3,exp:"Dienstag = martes."},
+    {p:"¿Cómo se dice 'sábado'?",ops:["Sonntag","Freitag","Samstag","Montag"],r:2,exp:"Samstag = sábado."},
+    {p:"'Jeden Tag' significa:",ops:["cada semana","cada día","cada mes","cada año"],r:1,exp:"jeden Tag = cada día."},
+  ],
+  fill:[
+    {p:"___ ist Montag. (Hoy es lunes)",ans:["Heute"],exp:"Heute = hoy"},
+    {p:"Ich arbeite ___ Montag. (Trabajo el lunes)",ans:["am"],exp:"am + día de la semana"},
+    {p:"Am ___ gehe ich ins Kino. (El viernes voy al cine)",ans:["Freitag"],exp:"Freitag = viernes"},
+    {p:"Das ___ ist schön. (El fin de semana es bonito)",ans:["Wochenende"],exp:"Wochenende = fin de semana"},
+    {p:"___ Tag lerne ich Deutsch. (Cada día aprendo alemán)",ans:["Jeden"],exp:"Jeden Tag = cada día"},
+    {p:"Am ___ hat sie frei. (El domingo tiene libre)",ans:["Sonntag"],exp:"Sonntag = domingo"},
+    {p:"___ ist Mittwoch. (Mañana es miércoles)",ans:["Morgen"],exp:"Morgen = mañana"},
+    {p:"Am ___ gehen wir essen. (El sábado vamos a comer)",ans:["Samstag"],exp:"Samstag = sábado"},
+    {p:"Am ___ arbeite ich. (El martes trabajo)",ans:["Dienstag"],exp:"Dienstag = martes"},
+    {p:"Am ___ ist er zu Hause. (El jueves está en casa)",ans:["Donnerstag"],exp:"Donnerstag = jueves"},
+  ],
+  tr:[
+    {p:"Traduce: 'Hoy es lunes'",ans:["Heute ist Montag"],exp:"Heute = hoy, Montag = lunes"},
+    {p:"Traduce: 'El viernes voy al cine'",ans:["Am Freitag gehe ich ins Kino"],exp:"Am Freitag = el viernes"},
+    {p:"Traduce: 'El fin de semana'",ans:["Das Wochenende","Am Wochenende"],exp:"Wochenende = fin de semana"},
+    {p:"Traduce: 'Cada día'",ans:["Jeden Tag"],exp:"Jeden Tag = cada día"},
+    {p:"Traduce: 'El domingo tiene libre'",ans:["Am Sonntag hat sie frei"],exp:"Sonntag = domingo"},
+    {p:"Traduce: 'Mañana es miércoles'",ans:["Morgen ist Mittwoch"],exp:"Morgen = mañana"},
+    {p:"Traduce: 'El sábado vamos a comer'",ans:["Am Samstag gehen wir essen"],exp:"Samstag = sábado"},
+    {p:"Traduce: 'El martes trabajo'",ans:["Am Dienstag arbeite ich"],exp:"Dienstag = martes"},
+    {p:"Traduce: 'El jueves está en casa'",ans:["Am Donnerstag ist er zu Hause"],exp:"Donnerstag = jueves"},
+    {p:"Traduce: 'Los lunes y miércoles'",ans:["Montags und mittwochs","Am Montag und Mittwoch"],exp:"Se puede usar -s para rutina: montags"},
+  ]
+},
+{
+  id:18, titulo:"Meses del Año", icono:"🗓️",
+  mc:[
+    {p:"¿Cómo se dice 'enero'?",ops:["Februar","März","Januar","April"],r:2,exp:"Januar = enero."},
+    {p:"¿Cómo se dice 'julio'?",ops:["Juni","Juli","August","September"],r:1,exp:"Juli = julio."},
+    {p:"¿Qué mes es 'Oktober'?",ops:["agosto","septiembre","octubre","noviembre"],r:2,exp:"Oktober = octubre."},
+    {p:"¿Cómo se dice 'diciembre'?",ops:["November","Dezember","Oktober","September"],r:1,exp:"Dezember = diciembre."},
+    {p:"¿Qué mes sigue a 'März'?",ops:["Februar","Januar","April","Mai"],r:2,exp:"März = marzo, le sigue April = abril."},
+    {p:"¿Cómo se dice 'en mayo'?",ops:["am Mai","bei Mai","im Mai","in Mai"],r:2,exp:"im Mai = en mayo."},
+    {p:"¿Qué mes es 'August'?",ops:["junio","julio","agosto","septiembre"],r:2,exp:"August = agosto."},
+    {p:"¿Cómo se dice 'febrero'?",ops:["Januar","März","Februar","April"],r:2,exp:"Februar = febrero."},
+    {p:"¿Cuándo es Navidad? (Weihnachten)",ops:["Oktober","November","Dezember","Januar"],r:2,exp:"Weihnachten ist im Dezember."},
+    {p:"¿Qué mes es 'September'?",ops:["julio","agosto","septiembre","octubre"],r:2,exp:"September = septiembre."},
+  ],
+  fill:[
+    {p:"___ Januar ist Neujahr. (El 1° de enero es Año Nuevo)",ans:["Im","im"],exp:"im Januar = en enero"},
+    {p:"Ich habe im ___ Geburtstag. (Tengo cumpleaños en mayo)",ans:["Mai"],exp:"Mai = mayo"},
+    {p:"Weihnachten ist im ___. (Navidad es en diciembre)",ans:["Dezember"],exp:"Dezember = diciembre"},
+    {p:"Der ___ hat 28 Tage. (Febrero tiene 28 días)",ans:["Februar"],exp:"Februar = febrero"},
+    {p:"Im ___ ist es heiß. (En julio hace calor)",ans:["Juli"],exp:"Juli = julio"},
+    {p:"Der ___ ist der dritte Monat. (Marzo es el tercer mes)",ans:["März"],exp:"März = marzo"},
+    {p:"Im ___ regnet es viel. (En octubre llueve mucho)",ans:["Oktober"],exp:"Oktober = octubre"},
+    {p:"Der ___ hat 30 Tage. (Noviembre tiene 30 días)",ans:["November"],exp:"November = noviembre"},
+    {p:"Im ___ beginnt der Frühling. (En marzo empieza la primavera)",ans:["März"],exp:"März = marzo"},
+    {p:"Im ___ ist Sommer. (En agosto es verano)",ans:["August"],exp:"August = agosto"},
+  ],
+  tr:[
+    {p:"Traduce: 'En enero'",ans:["Im Januar"],exp:"im + mes"},
+    {p:"Traduce: 'En mayo tengo cumpleaños'",ans:["Im Mai habe ich Geburtstag"],exp:"Im Mai = en mayo"},
+    {p:"Traduce: 'Navidad es en diciembre'",ans:["Weihnachten ist im Dezember"],exp:"Dezember = diciembre"},
+    {p:"Traduce: 'Febrero tiene 28 días'",ans:["Der Februar hat 28 Tage"],exp:"Februar = febrero"},
+    {p:"Traduce: 'En julio hace calor'",ans:["Im Juli ist es heiß"],exp:"Juli = julio, heiß = caliente"},
+    {p:"Traduce: 'Octubre'",ans:["Oktober"],exp:"Oktober = octubre"},
+    {p:"Traduce: 'En septiembre empieza el otoño'",ans:["Im September beginnt der Herbst"],exp:"September, Herbst = otoño"},
+    {p:"Traduce: '¿En qué mes es tu cumpleaños?'",ans:["In welchem Monat hast du Geburtstag?"],exp:"In welchem Monat = ¿en qué mes?"},
+    {p:"Traduce: 'Los meses del año'",ans:["Die Monate des Jahres"],exp:"Monate = meses, Jahr = año"},
+    {p:"Traduce: 'En agosto es verano'",ans:["Im August ist Sommer"],exp:"August = agosto, Sommer = verano"},
+  ]
+},
+{
+  id:19, titulo:"Negación y Estructura de Oraciones", icono:"🚫",
+  mc:[
+    {p:"¿Cuándo se usa 'kein/keine'?",ops:["Para negar adjetivos","Para negar verbos","Para negar sustantivos","Para negar adverbios"],r:2,exp:"kein/keine niega sustantivos. Ej: Ich habe kein Geld."},
+    {p:"'Ich habe ___ Hund'",ops:["nicht","kein","keine","keinen"],r:3,exp:"Hund = masculino, acusativo → keinen Hund."},
+    {p:"'Das ist ___ Buch'",ops:["nicht","keinen","kein","keine"],r:2,exp:"Buch = neutro → kein Buch."},
+    {p:"'Sie ist ___ müde'",ops:["kein","keine","keinen","nicht"],r:3,exp:"müde es un adjetivo → se niega con 'nicht'."},
+    {p:"¿Dónde va 'nicht' en la oración?",ops:["al inicio","después del sujeto","al final generalmente","antes del verbo siempre"],r:2,exp:"'nicht' generalmente va al final o antes del elemento negado."},
+    {p:"'Ich verstehe ___ Deutsch'",ops:["kein","keine","nicht","keinen"],r:2,exp:"Deutsch como adverbio/idioma → nicht."},
+    {p:"'Ich habe ___ Zeit' (No tengo tiempo)",ops:["nicht","keine","keinen","kein"],r:1,exp:"Zeit = femenino → keine Zeit."},
+    {p:"'Er kommt ___ heute'",ops:["kein","keine","nicht","keinen"],r:2,exp:"nicht niega adverbios y verbos."},
+    {p:"'Das ist ___ Auto' (Eso no es un carro)",ops:["nicht","kein","keine","keinen"],r:1,exp:"Auto = neutro → kein Auto."},
+    {p:"'Ich bin ___ Student'",ops:["keine","keinen","kein","nicht"],r:3,exp:"Student = profesión sin artículo → nicht Student."},
+  ],
+  fill:[
+    {p:"Ich habe ___ Hund. (No tengo un perro — masc.)",ans:["keinen"],exp:"Masculino acusativo → keinen"},
+    {p:"Das ist ___ Buch. (Eso no es un libro)",ans:["kein"],exp:"Neutro → kein"},
+    {p:"Sie ist ___ müde. (Ella no está cansada)",ans:["nicht"],exp:"Adjetivo → nicht"},
+    {p:"Ich habe ___ Zeit. (No tengo tiempo — fem.)",ans:["keine"],exp:"Femenino → keine"},
+    {p:"Er kommt ___ heute. (Él no viene hoy)",ans:["nicht"],exp:"Adverbio → nicht"},
+    {p:"Das ist ___ Auto. (No es un carro — neutro)",ans:["kein"],exp:"Neutro → kein"},
+    {p:"Ich bin ___ müde. (No estoy cansado)",ans:["nicht"],exp:"Adjetivo predicativo → nicht"},
+    {p:"Sie hat ___ Geschwister. (No tiene hermanos — plural)",ans:["keine"],exp:"Plural → keine"},
+    {p:"Ich verstehe ___ Deutsch. (No entiendo alemán)",ans:["nicht","kein"],exp:"nicht Deutsch (como idioma)"},
+    {p:"Er ist ___ Student. (Él no es estudiante)",ans:["kein","nicht"],exp:"nicht Student (profesión sin artículo)"},
+  ],
+  tr:[
+    {p:"Traduce: 'No tengo un perro'",ans:["Ich habe keinen Hund"],exp:"keinen = masculino acusativo"},
+    {p:"Traduce: 'Eso no es un libro'",ans:["Das ist kein Buch"],exp:"kein = neutro"},
+    {p:"Traduce: 'Ella no está cansada'",ans:["Sie ist nicht müde"],exp:"nicht niega adjetivos"},
+    {p:"Traduce: 'No tengo tiempo'",ans:["Ich habe keine Zeit"],exp:"keine = femenino"},
+    {p:"Traduce: 'Él no viene hoy'",ans:["Er kommt heute nicht","Er kommt nicht heute"],exp:"nicht al final o antes del adverbio"},
+    {p:"Traduce: 'No es un carro'",ans:["Das ist kein Auto"],exp:"kein = neutro"},
+    {p:"Traduce: 'No tengo hermanos'",ans:["Ich habe keine Geschwister"],exp:"keine = plural"},
+    {p:"Traduce: 'No entiendo alemán'",ans:["Ich verstehe nicht Deutsch","Ich verstehe kein Deutsch"],exp:"nicht o kein Deutsch"},
+    {p:"Traduce: 'Él no es estudiante'",ans:["Er ist kein Student","Er ist nicht Student"],exp:"kein o nicht Student"},
+    {p:"Traduce: 'No soy alemán'",ans:["Ich bin kein Deutscher","Ich bin nicht Deutscher"],exp:"kein Deutscher o nicht"},
+  ]
+},
+{
+  id:20, titulo:"Negación II", icono:"❌",
+  mc:[
+    {p:"'Nie' significa:",ops:["también","siempre","nunca","a veces"],r:2,exp:"nie = nunca. Ej: Ich gehe nie ins Kino."},
+    {p:"'Niemand' significa:",ops:["nada","nadie","ningún lugar","nunca"],r:1,exp:"niemand = nadie."},
+    {p:"'Nichts' significa:",ops:["nadie","nunca","nada","ninguno"],r:2,exp:"nichts = nada."},
+    {p:"'Nirgends' significa:",ops:["nadie","nunca","nada","en ningún lugar"],r:3,exp:"nirgends = en ningún lugar."},
+    {p:"¿Cuál oración es correcta?",ops:["Ich gehe nicht nie","Ich gehe nie","Nie ich gehe","Ich nie gehe"],r:1,exp:"Ich gehe nie = Yo nunca voy."},
+    {p:"'Noch nicht' significa:",ops:["ya no","todavía no","nunca","tampoco"],r:1,exp:"noch nicht = todavía no."},
+    {p:"'Nicht mehr' significa:",ops:["todavía no","nunca","ya no / no más","tampoco"],r:2,exp:"nicht mehr = ya no."},
+    {p:"¿Cuál oración niega con 'nichts'?",ops:["Ich habe niemand","Ich verstehe nichts","Ich gehe nirgends","Ich komme nie"],r:1,exp:"nichts niega cosas/acciones. Ich verstehe nichts."},
+    {p:"'Auch nicht' significa:",ops:["tampoco","también no","ya no","todavía no"],r:0,exp:"auch nicht = tampoco."},
+    {p:"'Kein... mehr' significa:",ops:["nunca más","ya no hay más... / no queda...","todavía no hay","nada de..."],r:1,exp:"kein... mehr = ya no hay más."},
+  ],
+  fill:[
+    {p:"Ich gehe ___ ins Kino. (Nunca voy al cine)",ans:["nie"],exp:"nie = nunca"},
+    {p:"Ich verstehe ___. (No entiendo nada)",ans:["nichts"],exp:"nichts = nada"},
+    {p:"___ kommt. (Nadie viene)",ans:["Niemand"],exp:"Niemand = nadie"},
+    {p:"Er ist ___ hier. (Él no está en ningún lugar)",ans:["nirgends","nirgendwo"],exp:"nirgends = en ningún lugar"},
+    {p:"Ich bin ___ fertig. (Todavía no estoy listo)",ans:["noch nicht"],exp:"noch nicht = todavía no"},
+    {p:"Sie wohnt ___ hier. (Ella ya no vive aquí)",ans:["nicht mehr"],exp:"nicht mehr = ya no"},
+    {p:"Ich trinke ___ Kaffee. (Ya no bebo café)",ans:["keinen Kaffee mehr","nicht mehr Kaffee"],exp:"keinen... mehr o nicht mehr"},
+    {p:"Ich auch ___. (Yo tampoco)",ans:["nicht","auch nicht"],exp:"Ich auch nicht = yo tampoco"},
+    {p:"Er kommt ___. (Él nunca viene)",ans:["nie"],exp:"nie = nunca"},
+    {p:"___ weiß es. (Nadie lo sabe)",ans:["Niemand"],exp:"Niemand = nadie"},
+  ],
+  tr:[
+    {p:"Traduce: 'Nunca voy al cine'",ans:["Ich gehe nie ins Kino"],exp:"nie = nunca"},
+    {p:"Traduce: 'No entiendo nada'",ans:["Ich verstehe nichts"],exp:"nichts = nada"},
+    {p:"Traduce: 'Nadie viene'",ans:["Niemand kommt"],exp:"Niemand = nadie"},
+    {p:"Traduce: 'Todavía no estoy listo'",ans:["Ich bin noch nicht fertig"],exp:"noch nicht = todavía no"},
+    {p:"Traduce: 'Ella ya no vive aquí'",ans:["Sie wohnt nicht mehr hier"],exp:"nicht mehr = ya no"},
+    {p:"Traduce: 'Yo tampoco'",ans:["Ich auch nicht"],exp:"auch nicht = tampoco"},
+    {p:"Traduce: 'Él nunca viene'",ans:["Er kommt nie"],exp:"nie = nunca"},
+    {p:"Traduce: 'Nadie lo sabe'",ans:["Niemand weiß es"],exp:"Niemand = nadie"},
+    {p:"Traduce: 'Ya no hay café'",ans:["Es gibt keinen Kaffee mehr"],exp:"keinen... mehr"},
+    {p:"Traduce: 'En ningún lugar'",ans:["Nirgends","Nirgendwo"],exp:"nirgends o nirgendwo"},
+  ]
+},
+{
+  id:21, titulo:"Verbos Modales", icono:"⚙️",
+  mc:[
+    {p:"¿Qué expresa 'können'?",ops:["deber moral","querer","poder/ser capaz","tener que"],r:2,exp:"können = poder. Ej: Ich kann schwimmen."},
+    {p:"¿Qué expresa 'müssen'?",ops:["poder","querer","deber moral","necesidad/obligación"],r:3,exp:"müssen = tener que/deber (necesidad)."},
+    {p:"¿Qué expresa 'wollen'?",ops:["poder","querer/desear","deber","necesitar"],r:1,exp:"wollen = querer. Ej: Ich will essen."},
+    {p:"'Ich ___ Deutsch' (puedo alemán)",ops:["will","kann","muss","darf"],r:1,exp:"können → ich kann."},
+    {p:"'Du ___ kommen' (tienes que venir)",ops:["kannst","willst","musst","darfst"],r:2,exp:"müssen → du musst."},
+    {p:"¿Qué expresa 'dürfen'?",ops:["necesidad","capacidad","permiso","deseo"],r:2,exp:"dürfen = tener permiso. Ej: Ich darf hier parken."},
+    {p:"¿Qué expresa 'sollen'?",ops:["querer","poder","deber moral/obligación externa","necesitar"],r:2,exp:"sollen = deber (por orden de otro). Ej: Er soll kommen."},
+    {p:"'Er ___ nicht rauchen' (no puede fumar — prohibición)",ops:["muss","kann","darf","soll"],r:2,exp:"dürfen en negativo = no se permite."},
+    {p:"En una oración con modal, el infinitivo va:",ops:["después del sujeto","en posición 2","al final","antes del modal"],r:2,exp:"Modal en pos.2 + infinitivo al final."},
+    {p:"'Ich ___ ins Kino gehen' (quiero ir al cine)",ops:["kann","muss","will","darf"],r:2,exp:"wollen → ich will."},
+  ],
+  fill:[
+    {p:"Ich ___ schwimmen. (Puedo nadar)",ans:["kann"],exp:"können → ich kann"},
+    {p:"Du ___ kommen. (Tienes que venir)",ans:["musst"],exp:"müssen → du musst"},
+    {p:"Er ___ ins Kino gehen. (Quiere ir al cine)",ans:["will"],exp:"wollen → er will"},
+    {p:"Wir ___ nicht rauchen. (No podemos fumar — prohibición)",ans:["dürfen"],exp:"dürfen = permiso → negativo = prohibición"},
+    {p:"Sie ___ arbeiten. (Ella debe trabajar — obligación externa)",ans:["soll"],exp:"sollen = deber por orden ajena"},
+    {p:"Ich ___ Deutsch sprechen. (Quiero hablar alemán)",ans:["will"],exp:"wollen → ich will"},
+    {p:"Er ___ nicht lügen. (No debe mentir — moral)",ans:["darf nicht","soll nicht"],exp:"darf nicht = no se permite"},
+    {p:"Wir ___ früh aufstehen. (Tenemos que levantarnos temprano)",ans:["müssen"],exp:"müssen → wir müssen"},
+    {p:"Du ___ hier parken. (Puedes estacionar aquí)",ans:["kannst","darfst"],exp:"können o dürfen según contexto"},
+    {p:"Ich ___ nicht kommen. (No puedo venir)",ans:["kann"],exp:"können → ich kann nicht"},
+  ],
+  tr:[
+    {p:"Traduce: 'Puedo nadar'",ans:["Ich kann schwimmen"],exp:"kann + infinitivo al final"},
+    {p:"Traduce: 'Tienes que venir'",ans:["Du musst kommen"],exp:"musst + infinitivo al final"},
+    {p:"Traduce: 'Quiero ir al cine'",ans:["Ich will ins Kino gehen"],exp:"will + infinitivo al final"},
+    {p:"Traduce: 'No podemos fumar aquí'",ans:["Wir dürfen hier nicht rauchen"],exp:"dürfen nicht = no se permite"},
+    {p:"Traduce: 'Ella debe trabajar'",ans:["Sie soll arbeiten"],exp:"soll = deber (externo)"},
+    {p:"Traduce: 'No puedo venir'",ans:["Ich kann nicht kommen"],exp:"kann nicht + infinitivo"},
+    {p:"Traduce: '¿Puedo estacionar aquí?'",ans:["Darf ich hier parken?"],exp:"dürfen = permiso"},
+    {p:"Traduce: 'Tenemos que levantarnos temprano'",ans:["Wir müssen früh aufstehen"],exp:"müssen + infinitivo al final"},
+    {p:"Traduce: 'Él quiere hablar alemán'",ans:["Er will Deutsch sprechen"],exp:"will + infinitivo"},
+    {p:"Traduce: '¿Puedes ayudarme?'",ans:["Kannst du mir helfen?"],exp:"Kannst + sujeto + infinitivo al final"},
+  ]
+},
+{
+  id:22, titulo:"Imperativo", icono:"📢",
+  mc:[
+    {p:"¿Cómo se forma el imperativo de 'du' con 'kommen'?",ops:["Komm!","Kommst!","Kommst du!","Kommen!"],r:0,exp:"du-imperativo: raíz del verbo. kommen → Komm!"},
+    {p:"¿Cómo se dice 'Siéntate' (du)?",ops:["Setzen Sie sich!","Setz dich!","Setzt euch!","Setze dich bitte!"],r:1,exp:"Setz dich! = Siéntate (informal du)."},
+    {p:"¿Cómo se forma el imperativo de 'Sie' con 'kommen'?",ops:["Komm!","Kommt!","Kommen Sie!","Kommen!"],r:2,exp:"Sie-imperativo: infinitivo + Sie. Kommen Sie!"},
+    {p:"¿Cómo se dice '¡Escucha!' (du)?",ops:["Hören!","Hörst!","Hör!","Höre!"],r:2,exp:"hören → Hör! (du-imperativo sin -e en uso informal)."},
+    {p:"¿Cómo se forma el imperativo de 'ihr'?",ops:["Kommst!","Kommen!","Kommt!","Komme!"],r:2,exp:"ihr-imperativo = forma ihr del verbo. kommen → Kommt!"},
+    {p:"'Bitte setz dich' significa:",ops:["Por favor levántate","Por favor siéntate","Por favor vete","Por favor calla"],r:1,exp:"setz dich = siéntate."},
+    {p:"'Sprich langsam!' significa:",ops:["¡Habla rápido!","¡Habla despacio!","¡Escucha despacio!","¡Escribe despacio!"],r:1,exp:"Sprich = habla (du, sprechen con cambio vocálico)."},
+    {p:"¿Cómo se dice '¡Vengan!' (Sie formal)?",ops:["Komm!","Kommt!","Kommen Sie!","Kommst!"],r:2,exp:"Sie-imperativo: Kommen Sie!"},
+    {p:"'Mach die Tür zu!' significa:",ops:["Abre la puerta","Cierra la puerta","Limpia la puerta","Pinta la puerta"],r:1,exp:"zumachen (separable) = cerrar. Mach... zu = cierra."},
+    {p:"¿Cómo se dice '¡Escriban!' (ihr)?",ops:["Schreib!","Schreibt!","Schreiben Sie!","Schreiben!"],r:1,exp:"ihr-imperativo de schreiben → Schreibt!"},
+  ],
+  fill:[
+    {p:"___ bitte! (¡Ven, por favor! — du)",ans:["Komm"],exp:"kommen → Komm! (du)"},
+    {p:"___ dich! (¡Siéntate! — du)",ans:["Setz"],exp:"setzen → Setz dich!"},
+    {p:"___ Sie bitte. (Por favor entre — Sie formal)",ans:["Kommen","Treten Sie ein"],exp:"Kommen Sie bitte = entre usted"},
+    {p:"___ langsam! (¡Habla despacio! — du)",ans:["Sprich"],exp:"sprechen → Sprich (cambio e→i)"},
+    {p:"___ die Tür zu! (¡Cierra la puerta! — du)",ans:["Mach"],exp:"zumachen separable → Mach... zu"},
+    {p:"___ bitte Platz! (¡Tome asiento, por favor! — Sie)",ans:["Nehmen Sie","Nehmen"],exp:"Nehmen Sie Platz = Tome asiento"},
+    {p:"___ nicht so laut! (¡No hables tan alto! — du)",ans:["Sprich","Rede"],exp:"Sprich nicht so laut!"},
+    {p:"___ auf! (¡Escuchen! — ihr, aufhören)",ans:["Hört"],exp:"aufhören → Hört auf! (ihr)"},
+    {p:"___ mir! (¡Ayúdame! — du)",ans:["Hilf"],exp:"helfen → Hilf (cambio e→i)"},
+    {p:"___ das Buch! (¡Abre el libro! — ihr)",ans:["Öffnet","Macht"],exp:"öffnen → Öffnet das Buch!"},
+  ],
+  tr:[
+    {p:"Traduce: '¡Ven aquí!' (informal du)",ans:["Komm hier!","Komm hierher!"],exp:"Komm = ven (du)"},
+    {p:"Traduce: '¡Siéntate!' (du)",ans:["Setz dich!"],exp:"Setz dich = siéntate"},
+    {p:"Traduce: '¡Por favor entre!' (Sie)",ans:["Kommen Sie bitte!","Treten Sie bitte ein!"],exp:"Kommen Sie bitte"},
+    {p:"Traduce: '¡Habla despacio!' (du)",ans:["Sprich langsam!"],exp:"Sprich = habla (du)"},
+    {p:"Traduce: '¡Cierra la puerta!' (du)",ans:["Mach die Tür zu!"],exp:"Mach... zu = cierra"},
+    {p:"Traduce: '¡Escuchen!' (ihr)",ans:["Hört zu!","Hört!"],exp:"hören → Hört zu!"},
+    {p:"Traduce: '¡Ayúdame!' (du)",ans:["Hilf mir!"],exp:"helfen → Hilf mir"},
+    {p:"Traduce: '¡No fumes aquí!' (du)",ans:["Rauch hier nicht!"],exp:"rauchen → Rauch nicht hier"},
+    {p:"Traduce: '¡Tomen asiento!' (Sie)",ans:["Nehmen Sie bitte Platz!"],exp:"Nehmen Sie Platz"},
+    {p:"Traduce: '¡Escribe tu nombre!' (du)",ans:["Schreib deinen Namen!"],exp:"schreiben → Schreib"},
+  ]
+},
+{
+  id:23, titulo:"Comparativo", icono:"⚖️",
+  mc:[
+    {p:"¿Cómo se forma el comparativo en alemán?",ops:["adj + mehr","adj + -er","mehr + adj","adj + ste"],r:1,exp:"Comparativo = adjetivo + -er. groß → größer."},
+    {p:"¿Qué significa 'größer'?",ops:["más pequeño","igual","más grande","el más grande"],r:2,exp:"groß (grande) + -er → größer = más grande."},
+    {p:"'Schneller' es comparativo de:",ops:["lento","lento","rápido","suave"],r:2,exp:"schnell (rápido) → schneller (más rápido)."},
+    {p:"¿Cómo se expresa 'tan grande como'?",ops:["größer als","so groß wie","am größten","nicht so groß"],r:1,exp:"'so ... wie' = tan ... como."},
+    {p:"¿Cómo se expresa 'más grande que'?",ops:["so groß wie","am größten","größer als","sehr groß"],r:2,exp:"'adj. + -er + als' = más... que."},
+    {p:"'Besser' es comparativo de:",ops:["schlecht","viel","gut","schnell"],r:2,exp:"gut (bueno) → besser (mejor) — irregular."},
+    {p:"'Mehr' es comparativo de:",ops:["groß","wenig","viel","gut"],r:2,exp:"viel (mucho) → mehr (más) — irregular."},
+    {p:"'Der Hund ist ___ als die Katze' (más grande)",ops:["so groß","am größten","größer","am groß"],r:2,exp:"größer als = más grande que."},
+    {p:"'Er läuft ___ als ich' (más rápido)",ops:["am schnellsten","so schnell","schneller","schnell"],r:2,exp:"schneller als = más rápido que."},
+    {p:"¿Cómo se dice 'peor'?",ops:["mehr","besser","schlechter","weniger"],r:2,exp:"schlecht → schlechter = peor."},
+  ],
+  fill:[
+    {p:"Er ist groß___. (Él es más alto que yo — comparativo)",ans:["er","größer"],exp:"groß → größer"},
+    {p:"Das Auto ist schnell___ als das Fahrrad. (El carro es más rápido que la bici)",ans:["er","schneller"],exp:"schnell → schneller"},
+    {p:"Sie ist ___ als er. (Ella es mejor que él)",ans:["besser"],exp:"gut → besser = mejor"},
+    {p:"Ich habe ___ Zeit als du. (Tengo más tiempo que tú)",ans:["mehr"],exp:"viel → mehr = más"},
+    {p:"Er ist so groß ___ ich. (Él es tan grande como yo)",ans:["wie"],exp:"so ... wie = tan ... como"},
+    {p:"Das ist ___ als das andere. (Eso es peor que lo otro)",ans:["schlechter"],exp:"schlecht → schlechter"},
+    {p:"Sie ist kl___ als er. (Ella es más pequeña que él)",ans:["kleiner","kleiner als er"],exp:"klein → kleiner"},
+    {p:"Berlin ist gr___ als Hamburg. (Berlín es más grande que Hamburgo)",ans:["größer"],exp:"groß → größer"},
+    {p:"Ich lerne ___ als gestern. (Aprendo más que ayer)",ans:["mehr"],exp:"mehr = más"},
+    {p:"Er ist jung___ als sie. (Él es más joven que ella)",ans:["er","jünger"],exp:"jung → jünger (con umlaut)"},
+  ],
+  tr:[
+    {p:"Traduce: 'Él es más alto que yo'",ans:["Er ist größer als ich"],exp:"größer als = más grande que"},
+    {p:"Traduce: 'El carro es más rápido que la bicicleta'",ans:["Das Auto ist schneller als das Fahrrad"],exp:"schneller als = más rápido que"},
+    {p:"Traduce: 'Ella es mejor que él'",ans:["Sie ist besser als er"],exp:"besser = mejor"},
+    {p:"Traduce: 'Tengo más tiempo que tú'",ans:["Ich habe mehr Zeit als du"],exp:"mehr = más"},
+    {p:"Traduce: 'Él es tan grande como yo'",ans:["Er ist so groß wie ich"],exp:"so groß wie = tan grande como"},
+    {p:"Traduce: 'Eso es peor'",ans:["Das ist schlechter"],exp:"schlechter = peor"},
+    {p:"Traduce: 'Berlín es más grande que Hamburgo'",ans:["Berlin ist größer als Hamburg"],exp:"größer als = más grande que"},
+    {p:"Traduce: 'Él es más joven que ella'",ans:["Er ist jünger als sie"],exp:"jünger = más joven"},
+    {p:"Traduce: 'Aprendo más que antes'",ans:["Ich lerne mehr als früher"],exp:"mehr als = más que"},
+    {p:"Traduce: 'Ella es más pequeña que él'",ans:["Sie ist kleiner als er"],exp:"kleiner als = más pequeña que"},
+  ]
+},
+{
+  id:24, titulo:"Saludos", icono:"👋",
+  mc:[
+    {p:"¿Cómo se dice 'Buenos días'?",ops:["Guten Abend","Guten Morgen","Gute Nacht","Guten Tag"],r:1,exp:"Guten Morgen = Buenos días (por la mañana)."},
+    {p:"¿Cómo se dice 'Buenas tardes'?",ops:["Guten Morgen","Gute Nacht","Guten Tag","Guten Abend"],r:3,exp:"Guten Abend = Buenas tardes/noches (a partir de las 18h)."},
+    {p:"'Wie geht es Ihnen?' es:",ops:["informal","formal","plural","pasado"],r:1,exp:"'Ihnen' es formal. 'Wie geht es dir?' es informal."},
+    {p:"¿Cómo se responde a '¿Cómo estás?'",ops:["Danke gut","Gut, danke","Ich bin gut","Sehr gut, bitte"],r:1,exp:"Gut, danke = Bien, gracias."},
+    {p:"¿Cómo se dice 'Hasta luego'?",ops:["Gute Nacht","Tschüss","Auf Wiedersehen","Bis bald"],r:2,exp:"Auf Wiedersehen = Hasta la vista (formal)."},
+    {p:"¿Qué significa 'Tschüss'?",ops:["Hola","Hasta luego (informal)","Buenos días","Por favor"],r:1,exp:"Tschüss = Chao / Hasta luego (informal)."},
+    {p:"¿Cómo se dice 'Hola' (informal)?",ops:["Auf Wiedersehen","Guten Tag","Hallo","Guten Morgen"],r:2,exp:"Hallo = Hola (informal)."},
+    {p:"'Bis morgen' significa:",ops:["Hasta pronto","Hasta mañana","Hasta el lunes","Hasta luego"],r:1,exp:"morgen = mañana. Bis morgen = Hasta mañana."},
+    {p:"¿Cómo se dice 'Buenas noches' (al dormir)?",ops:["Guten Abend","Gute Nacht","Guten Tag","Tschüss"],r:1,exp:"Gute Nacht = Buenas noches (al despedirse para dormir)."},
+    {p:"'Herzlich willkommen!' significa:",ops:["Hasta luego","Bienvenido/a","Gracias","Lo siento"],r:1,exp:"Herzlich willkommen = Bienvenido/a calurosamente."},
+  ],
+  fill:[
+    {p:"___ Morgen! (¡Buenos días!)",ans:["Guten"],exp:"Guten Morgen = Buenos días"},
+    {p:"Wie ___ es dir? (¿Cómo estás? — informal)",ans:["geht"],exp:"Wie geht es dir?"},
+    {p:"___ gut, danke! (¡Muy bien, gracias!)",ans:["Sehr"],exp:"Sehr gut = muy bien"},
+    {p:"Auf ___! (¡Hasta la vista! — formal)",ans:["Wiedersehen"],exp:"Auf Wiedersehen = hasta la vista"},
+    {p:"Bis ___! (¡Hasta pronto!)",ans:["bald"],exp:"Bis bald = hasta pronto"},
+    {p:"___ willkommen! (¡Bienvenido!)",ans:["Herzlich"],exp:"Herzlich willkommen"},
+    {p:"Gute ___! (¡Buenas noches — al dormir!)",ans:["Nacht"],exp:"Gute Nacht = buenas noches"},
+    {p:"Bis ___! (¡Hasta mañana!)",ans:["morgen"],exp:"Bis morgen = hasta mañana"},
+    {p:"___ Abend! (¡Buenas tardes/noches!)",ans:["Guten"],exp:"Guten Abend = buenas tardes/noches"},
+    {p:"___ geht es Ihnen? (¿Cómo está usted? — formal)",ans:["Wie"],exp:"Wie geht es Ihnen?"},
+  ],
+  tr:[
+    {p:"Traduce: 'Buenos días'",ans:["Guten Morgen"],exp:"Guten Morgen"},
+    {p:"Traduce: '¿Cómo estás?' (informal)",ans:["Wie geht es dir?","Wie geht's?"],exp:"Wie geht es dir?"},
+    {p:"Traduce: 'Muy bien, gracias'",ans:["Sehr gut, danke"],exp:"Sehr gut, danke"},
+    {p:"Traduce: 'Hasta luego' (formal)",ans:["Auf Wiedersehen"],exp:"Auf Wiedersehen"},
+    {p:"Traduce: 'Hasta pronto'",ans:["Bis bald"],exp:"Bis bald"},
+    {p:"Traduce: 'Bienvenido'",ans:["Herzlich willkommen","Willkommen"],exp:"Herzlich willkommen"},
+    {p:"Traduce: 'Buenas noches' (al dormir)",ans:["Gute Nacht"],exp:"Gute Nacht"},
+    {p:"Traduce: 'Hasta mañana'",ans:["Bis morgen"],exp:"Bis morgen"},
+    {p:"Traduce: 'Buenas tardes/noches' (al encontrarse)",ans:["Guten Abend"],exp:"Guten Abend"},
+    {p:"Traduce: '¿Cómo está usted?' (formal)",ans:["Wie geht es Ihnen?"],exp:"Ihnen = formal"},
+  ]
+},
+{
+  id:25, titulo:"Lander (Países)", icono:"🌍",
+  mc:[
+    {p:"¿Cómo se dice 'Alemania'?",ops:["Österreich","Schweiz","Deutschland","Frankreich"],r:2,exp:"Deutschland = Alemania."},
+    {p:"¿Cómo se dice 'España'?",ops:["Portugal","Spanien","Italien","Frankreich"],r:1,exp:"Spanien = España."},
+    {p:"¿Qué país es 'Frankreich'?",ops:["Bélgica","Suiza","Francia","Holanda"],r:2,exp:"Frankreich = Francia."},
+    {p:"¿Cómo se dice 'soy de España'?",ops:["Ich komme aus Spanien","Ich bin Spanien","Ich lebe Spanien","Ich gehe nach Spanien"],r:0,exp:"'aus' + país = de (origen). Ich komme aus Spanien."},
+    {p:"¿Cómo se dice 'voy a Alemania'?",ops:["Ich komme aus Deutschland","Ich bin in Deutschland","Ich fahre nach Deutschland","Ich lebe Deutschland"],r:2,exp:"'nach' + país = a (destino). Ich fahre nach Deutschland."},
+    {p:"¿Cómo se dice 'Italia'?",ops:["Spanien","Griechenland","Portugal","Italien"],r:3,exp:"Italien = Italia."},
+    {p:"¿Qué país es 'die Schweiz'?",ops:["Austria","Suiza","Suecia","Bélgica"],r:1,exp:"die Schweiz = Suiza (con artículo femenino)."},
+    {p:"¿Cómo se dice 'México'?",ops:["Mexiko","Mejico","Mexique","Messico"],r:0,exp:"Mexiko = México."},
+    {p:"¿Cómo se dice 'en Alemania'?",ops:["nach Deutschland","aus Deutschland","in Deutschland","bei Deutschland"],r:2,exp:"'in' + país = en. Ej: Ich lebe in Deutschland."},
+    {p:"¿Cómo se dice 'soy alemán'?",ops:["Ich bin Deutschland","Ich komme aus Deutsch","Ich bin Deutsch","Ich bin Deutscher"],r:3,exp:"Ich bin Deutscher (m) / Deutsche (f) = soy alemán/a."},
+  ],
+  fill:[
+    {p:"Ich komme ___ Spanien. (Soy de España)",ans:["aus"],exp:"aus + país = de (origen)"},
+    {p:"Ich fahre ___ Deutschland. (Voy a Alemania)",ans:["nach"],exp:"nach + país = a (destino)"},
+    {p:"Ich lebe ___ Italien. (Vivo en Italia)",ans:["in"],exp:"in + país = en"},
+    {p:"___ ist schön. (Alemania es bonita)",ans:["Deutschland"],exp:"Deutschland = Alemania"},
+    {p:"Er kommt aus ___. (Él es de Francia)",ans:["Frankreich"],exp:"Frankreich = Francia"},
+    {p:"Wir fahren ___ die Schweiz. (Vamos a Suiza)",ans:["in die"],exp:"die Schweiz tiene artículo → in die Schweiz"},
+    {p:"Sie wohnt ___ Mexiko. (Vive en México)",ans:["in"],exp:"in + país = en"},
+    {p:"Ich bin ___ (masculino). (Soy alemán)",ans:["Deutscher"],exp:"Deutscher = alemán (masculino)"},
+    {p:"Er kommt aus ___. (Él es de Austria)",ans:["Österreich"],exp:"Österreich = Austria"},
+    {p:"Wir reisen ___ Frankreich. (Viajamos a Francia)",ans:["nach"],exp:"nach + país = a"},
+  ],
+  tr:[
+    {p:"Traduce: 'Soy de España'",ans:["Ich komme aus Spanien"],exp:"aus + país = de"},
+    {p:"Traduce: 'Voy a Alemania'",ans:["Ich fahre nach Deutschland"],exp:"nach + país = a"},
+    {p:"Traduce: 'Vivo en Italia'",ans:["Ich lebe in Italien"],exp:"in + país = en"},
+    {p:"Traduce: 'Francia es bonita'",ans:["Frankreich ist schön"],exp:"Frankreich = Francia"},
+    {p:"Traduce: 'Él es de Francia'",ans:["Er kommt aus Frankreich"],exp:"aus Frankreich = de Francia"},
+    {p:"Traduce: 'Vamos a Suiza'",ans:["Wir fahren in die Schweiz"],exp:"in die Schweiz (con artículo)"},
+    {p:"Traduce: 'Ella vive en México'",ans:["Sie wohnt in Mexiko"],exp:"in Mexiko = en México"},
+    {p:"Traduce: 'Soy alemán' (m)",ans:["Ich bin Deutscher"],exp:"Deutscher = alemán masculino"},
+    {p:"Traduce: 'Él es de Austria'",ans:["Er kommt aus Österreich"],exp:"Österreich = Austria"},
+    {p:"Traduce: 'Viajamos a Francia'",ans:["Wir reisen nach Frankreich"],exp:"nach Frankreich = a Francia"},
+  ]
+},
+{
+  id:26, titulo:"El Verbo 'Conocer' (kennen/wissen)", icono:"🧠",
+  mc:[
+    {p:"¿Cuál es la diferencia entre 'kennen' y 'wissen'?",ops:["Son sinónimos","kennen=conocer personas/lugares, wissen=saber datos","wissen=personas, kennen=datos","No hay diferencia"],r:1,exp:"kennen = conocer (personas, cosas). wissen = saber (hechos, datos)."},
+    {p:"'Ich ___ Maria' (conozco a María)",ops:["weiß","kenne","wissen","kann"],r:1,exp:"kennen para personas → Ich kenne Maria."},
+    {p:"'Ich ___ die Antwort' (sé la respuesta)",ops:["kenne","kann","weiß","will"],r:2,exp:"wissen para datos → Ich weiß die Antwort."},
+    {p:"'Ich ___ nicht, wo er ist' (no sé dónde está)",ops:["kenne","kann","weiß","darf"],r:2,exp:"wissen + subordinada → Ich weiß nicht, wo er ist."},
+    {p:"'Ich ___ Berlin gut' (conozco Berlín bien)",ops:["weiß","kenne","kann","muss"],r:1,exp:"kennen para lugares → Ich kenne Berlin gut."},
+    {p:"Conjugación de 'wissen' en 'ich':",ops:["wisse","weiß","wissst","wist"],r:1,exp:"wissen → ich weiß (irregular)."},
+    {p:"Conjugación de 'kennen' en 'du':",ops:["kennst","weißt","kennest","kannst"],r:0,exp:"kennen → du kennst."},
+    {p:"'Weißt du, wie spät es ist?' significa:",ops:["¿Conoces qué hora es?","¿Sabes qué hora es?","¿Puedes decirme la hora?","¿Tienes un reloj?"],r:1,exp:"wissen para datos → ¿Sabes qué hora es?"},
+    {p:"'Ich kenne ___ Lied' (conozco esa canción)",ops:["das","weiß","dieses","kenne"],r:2,exp:"kenne + objeto → Ich kenne dieses Lied."},
+    {p:"¿Cuál usa 'wissen'?",ops:["Ich ___ seinen Bruder","Ich ___ die Stadt","Ich ___ seinen Namen","Ich ___ das Restaurant"],r:2,exp:"'nombre' = dato → wissen. Ich weiß seinen Namen."},
+  ],
+  fill:[
+    {p:"Ich ___ Maria. (Conozco a María)",ans:["kenne"],exp:"kennen → ich kenne (personas)"},
+    {p:"Ich ___ die Antwort. (Sé la respuesta)",ans:["weiß"],exp:"wissen → ich weiß (datos)"},
+    {p:"___ du, wo er wohnt? (¿Sabes dónde vive?)",ans:["Weißt"],exp:"wissen → du weißt → ¿Weißt du?"},
+    {p:"Ich ___ Berlin gut. (Conozco bien Berlín)",ans:["kenne"],exp:"kennen → ich kenne (lugares)"},
+    {p:"Ich ___ nicht, wie er heißt. (No sé cómo se llama)",ans:["weiß"],exp:"wissen + dato → ich weiß"},
+    {p:"Er ___ die Antwort. (Él sabe la respuesta)",ans:["weiß"],exp:"wissen → er weiß"},
+    {p:"___ du seinen Bruder? (¿Conoces a su hermano?)",ans:["Kennst"],exp:"kennen → du kennst → ¿Kennst du?"},
+    {p:"Wir ___ das Restaurant. (Conocemos el restaurante)",ans:["kennen"],exp:"kennen → wir kennen"},
+    {p:"Ich ___ nicht, was das ist. (No sé qué es eso)",ans:["weiß"],exp:"wissen + dato → weiß"},
+    {p:"Sie ___ die Stadt gut. (Ella conoce bien la ciudad)",ans:["kennt"],exp:"kennen → sie kennt"},
+  ],
+  tr:[
+    {p:"Traduce: 'Conozco a María'",ans:["Ich kenne Maria"],exp:"kennen para personas"},
+    {p:"Traduce: 'Sé la respuesta'",ans:["Ich weiß die Antwort"],exp:"wissen para datos"},
+    {p:"Traduce: '¿Sabes dónde vive?'",ans:["Weißt du, wo er wohnt?"],exp:"wissen + subordinada"},
+    {p:"Traduce: 'Conozco bien Berlín'",ans:["Ich kenne Berlin gut"],exp:"kennen para lugares"},
+    {p:"Traduce: 'No sé cómo se llama'",ans:["Ich weiß nicht, wie er heißt"],exp:"wissen + dato"},
+    {p:"Traduce: 'Él sabe la respuesta'",ans:["Er weiß die Antwort"],exp:"wissen → er weiß"},
+    {p:"Traduce: '¿Conoces a su hermano?'",ans:["Kennst du seinen Bruder?"],exp:"kennen → kennst"},
+    {p:"Traduce: 'No sé qué es eso'",ans:["Ich weiß nicht, was das ist"],exp:"wissen + subordinada"},
+    {p:"Traduce: 'Ella conoce bien la ciudad'",ans:["Sie kennt die Stadt gut"],exp:"kennen → kennt"},
+    {p:"Traduce: 'Conocemos el restaurante'",ans:["Wir kennen das Restaurant"],exp:"kennen → kennen"},
+  ]
+}
+];
+
+// ══════════════════════════════════════════════════════════════
+// ESTADO GLOBAL
+// ══════════════════════════════════════════════════════════════
+let temaActual = 0;
+let puntosTotal = 0;
+let puntosPorTema = new Array(TEMAS.length).fill(0);
+let respondidoPorTema = new Array(TEMAS.length).fill(0);
+
+// ══════════════════════════════════════════════════════════════
+// RENDER SIDEBAR
+// ══════════════════════════════════════════════════════════════
+function renderSidebar() {
+  const nav = document.getElementById('sidebar-nav');
+  nav.innerHTML = TEMAS.map((t, i) => `
+    <div class="nav-tema ${i === temaActual ? 'activo' : ''} ${respondidoPorTema[i] >= 30 ? 'done' : ''}"
+         onclick="cargarTema(${i})">
+      <span class="nav-num">${String(i+1).padStart(2,'0')}</span>
+      ${t.icono} ${t.titulo}
+      ${respondidoPorTema[i] > 0 ? `<span class="check">${puntosPorTema[i]}/${respondidoPorTema[i]}</span>` : ''}
+    </div>
+  `).join('');
+  document.getElementById('score-total').textContent = puntosTotal;
+}
+
+// ══════════════════════════════════════════════════════════════
+// INICIAR CURSO
+// ══════════════════════════════════════════════════════════════
+function iniciarCurso() {
+  document.getElementById('pantalla-inicio').style.display = 'none';
+  document.getElementById('pantalla-tema').style.display = 'block';
+  cargarTema(0);
+}
+
+// ══════════════════════════════════════════════════════════════
+// CARGAR TEMA
+// ══════════════════════════════════════════════════════════════
+function cargarTema(idx) {
+  temaActual = idx;
+  if(window.innerWidth <= 768) cerrarSidebar();
+  renderSidebar();
+
+  const t = TEMAS[idx];
+  const totalEjs = t.mc.length + t.fill.length + t.tr.length;
+  const respondidos = respondidoPorTema[idx];
+  const pct = Math.round((respondidos / totalEjs) * 100);
+
+  document.getElementById('pantalla-tema').innerHTML = `
+    <div class="tema-header">
+      <div class="tema-icon">${t.icono}</div>
+      <div>
+        <div class="tema-title">${t.titulo}</div>
+        <div class="tema-sub">Tema ${idx+1} de ${TEMAS.length} · ${totalEjs} ejercicios</div>
+      </div>
+      <div class="tema-progress">
+        <div class="pts" id="pts-tema">${puntosPorTema[idx]}</div>
+        <div class="pts-label">puntos</div>
+      </div>
+    </div>
+    <div class="prog-bar-wrap"><div class="prog-bar" id="pb" style="width:${pct}%"></div></div>
+
+    <!-- SELECCIÓN MÚLTIPLE -->
+    <div class="tipo-section">
+      <div class="tipo-label">
+        <span class="tipo-badge badge-mc">Selección Múltiple</span>
+      </div>
+      ${t.mc.map((ej, i) => renderMC(ej, idx, i)).join('')}
+    </div>
+
+    <!-- COMPLETAR ESPACIOS -->
+    <div class="tipo-section">
+      <div class="tipo-label">
+        <span class="tipo-badge badge-fill">Completar espacios</span>
+      </div>
+      ${t.fill.map((ej, i) => renderFill(ej, idx, i)).join('')}
+    </div>
+
+    <!-- TRADUCCIÓN -->
+    <div class="tipo-section">
+      <div class="tipo-label">
+        <span class="tipo-badge badge-tr">Traducir</span>
+      </div>
+      ${t.tr.map((ej, i) => renderTR(ej, idx, i)).join('')}
+    </div>
+
+    <div id="resumen-${idx}" class="resumen"></div>
+    ${idx < TEMAS.length-1 ? `<button class="btn-sig" style="margin-top:16px;display:none" id="btn-sig-${idx}" onclick="cargarTema(${idx+1})">Siguiente tema →</button>` : ''}
+  `;
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════════════════════════
+// RENDER EJERCICIOS
+// ══════════════════════════════════════════════════════════════
+function renderMC(ej, tIdx, eIdx) {
+  const letras = ['A','B','C','D'];
+  return `
+  <div class="ejercicio" id="mc-${tIdx}-${eIdx}">
+    <div class="ej-num">Ejercicio ${eIdx+1}</div>
+    <div class="ej-pregunta">${ej.p}</div>
+    <div class="opciones">
+      ${ej.ops.map((op, oi) => `
+        <button class="opcion" onclick="responderMC(${tIdx},${eIdx},${oi},${ej.r})" id="mc-opt-${tIdx}-${eIdx}-${oi}">
+          <span class="opcion-letra">${letras[oi]}</span>${op}
+        </button>
+      `).join('')}
+    </div>
+    <div class="feedback" id="fb-mc-${tIdx}-${eIdx}"></div>
+  </div>`;
+}
+
+function renderFill(ej, tIdx, eIdx) {
+  return `
+  <div class="ejercicio" id="fill-${tIdx}-${eIdx}">
+    <div class="ej-num">Ejercicio ${eIdx+1}</div>
+    <div class="ej-pregunta">${ej.p}</div>
+    <div class="fill-wrap">
+      <input class="fill-input" id="fill-inp-${tIdx}-${eIdx}" placeholder="Escribe aquí..."
+             onkeydown="if(event.key==='Enter')responderFill(${tIdx},${eIdx})"/>
+      <button class="btn-check" id="fill-btn-${tIdx}-${eIdx}" onclick="responderFill(${tIdx},${eIdx})">Verificar</button>
+    </div>
+    <div class="feedback" id="fb-fill-${tIdx}-${eIdx}"></div>
+  </div>`;
+}
+
+function renderTR(ej, tIdx, eIdx) {
+  return `
+  <div class="ejercicio" id="tr-${tIdx}-${eIdx}">
+    <div class="ej-num">Ejercicio ${eIdx+1}</div>
+    <div class="ej-pregunta">${ej.p}</div>
+    <div class="tr-area">
+      <input class="tr-input" id="tr-inp-${tIdx}-${eIdx}" placeholder="Escribe tu traducción..."
+             onkeydown="if(event.key==='Enter')responderTR(${tIdx},${eIdx})"/>
+      <button class="btn-check" id="tr-btn-${tIdx}-${eIdx}" onclick="responderTR(${tIdx},${eIdx})">Verificar</button>
+    </div>
+    <div class="feedback" id="fb-tr-${tIdx}-${eIdx}"></div>
+  </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════
+// RESPONDER
+// ══════════════════════════════════════════════════════════════
+function responderMC(tIdx, eIdx, elegida, correcta) {
+  const card = document.getElementById(`mc-${tIdx}-${eIdx}`);
+  if(card.classList.contains('correcto') || card.classList.contains('incorrecto')) return;
+
+  const t = TEMAS[tIdx];
+  const ej = t.mc[eIdx];
+  const fb = document.getElementById(`fb-mc-${tIdx}-${eIdx}`);
+
+  // Deshabilitar opciones
+  for(let i=0; i<ej.ops.length; i++) {
+    const btn = document.getElementById(`mc-opt-${tIdx}-${eIdx}-${i}`);
+    btn.disabled = true;
+  }
+
+  registrarRespuesta(tIdx);
+
+  if(elegida === correcta) {
+    document.getElementById(`mc-opt-${tIdx}-${eIdx}-${elegida}`).classList.add('sel-correcta');
+    card.classList.add('correcto');
+    fb.className = 'feedback ok';
+    fb.innerHTML = `✅ <strong>¡Correcto!</strong> ${ej.exp}`;
+    sumarPunto(tIdx);
+  } else {
+    document.getElementById(`mc-opt-${tIdx}-${eIdx}-${elegida}`).classList.add('sel-incorrecta');
+    document.getElementById(`mc-opt-${tIdx}-${eIdx}-${correcta}`).classList.add('sel-reveal');
+    card.classList.add('incorrecto');
+    fb.className = 'feedback err';
+    fb.innerHTML = `❌ <strong>Incorrecto.</strong> La respuesta correcta es: <strong>${ej.ops[correcta]}</strong>. ${ej.exp}`;
+  }
+}
+
+function responderFill(tIdx, eIdx) {
+  const inp = document.getElementById(`fill-inp-${tIdx}-${eIdx}`);
+  const btn = document.getElementById(`fill-btn-${tIdx}-${eIdx}`);
+  const card = document.getElementById(`fill-${tIdx}-${eIdx}`);
+  const fb = document.getElementById(`fb-fill-${tIdx}-${eIdx}`);
+  if(inp.disabled) return;
+
+  const ej = TEMAS[tIdx].fill[eIdx];
+  const resp = inp.value.trim();
+  if(!resp) return;
+
+  inp.disabled = true;
+  btn.disabled = true;
+  registrarRespuesta(tIdx);
+
+  const correctas = ej.ans.map(a => a.toLowerCase());
+  const esCorrecta = correctas.includes(resp.toLowerCase());
+
+  if(esCorrecta) {
+    inp.classList.add('ok');
+    card.classList.add('correcto');
+    fb.className = 'feedback ok';
+    fb.innerHTML = `✅ <strong>¡Correcto!</strong> ${ej.exp}`;
+    sumarPunto(tIdx);
+  } else {
+    inp.classList.add('err');
+    card.classList.add('incorrecto');
+    fb.className = 'feedback err';
+    fb.innerHTML = `❌ <strong>Incorrecto.</strong> Respuesta aceptada: <strong>${ej.ans[0]}</strong>. ${ej.exp}`;
+  }
+}
+
+function responderTR(tIdx, eIdx) {
+  const inp = document.getElementById(`tr-inp-${tIdx}-${eIdx}`);
+  const btn = document.getElementById(`tr-btn-${tIdx}-${eIdx}`);
+  const card = document.getElementById(`tr-${tIdx}-${eIdx}`);
+  const fb = document.getElementById(`fb-tr-${tIdx}-${eIdx}`);
+  if(inp.disabled) return;
+
+  const ej = TEMAS[tIdx].tr[eIdx];
+  const resp = inp.value.trim();
+  if(!resp) return;
+
+  inp.disabled = true;
+  btn.disabled = true;
+  registrarRespuesta(tIdx);
+
+  const correctas = ej.ans.map(a => a.toLowerCase().replace(/[?.!]/g,'').trim());
+  const respLimpia = resp.toLowerCase().replace(/[?.!]/g,'').trim();
+  const esCorrecta = correctas.includes(respLimpia);
+
+  if(esCorrecta) {
+    inp.classList.add('ok');
+    card.classList.add('correcto');
+    fb.className = 'feedback ok';
+    fb.innerHTML = `✅ <strong>¡Correcto!</strong> ${ej.exp}`;
+    sumarPunto(tIdx);
+  } else {
+    inp.classList.add('err');
+    card.classList.add('incorrecto');
+    fb.className = 'feedback err';
+    fb.innerHTML = `❌ <strong>Incorrecto.</strong> Respuesta correcta: <strong>${ej.ans[0]}</strong>. ${ej.exp}`;
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// PUNTAJE
+// ══════════════════════════════════════════════════════════════
+function sumarPunto(tIdx) {
+  puntosPorTema[tIdx]++;
+  puntosTotal++;
+  const el = document.getElementById('pts-tema');
+  if(el) el.textContent = puntosPorTema[tIdx];
+  document.getElementById('score-total').textContent = puntosTotal;
+  actualizarProgreso(tIdx);
+}
+
+function registrarRespuesta(tIdx) {
+  respondidoPorTema[tIdx]++;
+  actualizarProgreso(tIdx);
+  verificarCompletado(tIdx);
+}
+
+function actualizarProgreso(tIdx) {
+  const t = TEMAS[tIdx];
+  const total = t.mc.length + t.fill.length + t.tr.length;
+  const pct = Math.round((respondidoPorTema[tIdx] / total) * 100);
+  const pb = document.getElementById('pb');
+  if(pb) pb.style.width = pct + '%';
+  renderSidebar();
+}
+
+function verificarCompletado(tIdx) {
+  const t = TEMAS[tIdx];
+  const total = t.mc.length + t.fill.length + t.tr.length;
+  if(respondidoPorTema[tIdx] >= total) {
+    const pts = puntosPorTema[tIdx];
+    const porcentaje = Math.round((pts / total) * 100);
+    let emoji = porcentaje >= 80 ? '🏆' : porcentaje >= 60 ? '👍' : '📚';
+    const res = document.getElementById(`resumen-${tIdx}`);
+    if(res) {
+      res.className = 'resumen visible';
+      res.innerHTML = `
+        <div style="font-size:40px;margin-bottom:8px">${emoji}</div>
+        <h3>¡Tema completado!</h3>
+        <div class="big-score">${pts}/${total}</div>
+        <p>${porcentaje}% de respuestas correctas — ${porcentaje >= 80 ? '¡Excelente trabajo!' : porcentaje >= 60 ? 'Buen trabajo. Sigue practicando.' : 'Sigue practicando este tema.'}</p>
+      `;
+    }
+    const btnSig = document.getElementById(`btn-sig-${tIdx}`);
+    if(btnSig) btnSig.style.display = 'inline-block';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// SIDEBAR MÓVIL
+// ══════════════════════════════════════════════════════════════
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('overlay').classList.toggle('open');
+}
+function cerrarSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+
+// INIT
+renderSidebar();
+</script>
+</body>
+</html>
